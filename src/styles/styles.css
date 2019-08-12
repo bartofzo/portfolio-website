@@ -1,0 +1,339 @@
+body {
+    font-family: 'Roboto Condensed', sans-serif;
+    background-color: white;
+    color: white;
+
+    /*
+    background-image: url('../assets/code.png');
+    background-size: contain;
+    */
+
+
+    --small-margin: 10px;
+    --large-margin: 20px;
+    --small-padding: 10px;
+    --large-padding: 20px;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing:    border-box;
+    -ms-box-sizing:     border-box;
+    -o-box-sizing:      border-box;
+    box-sizing:         border-box;
+}
+
+a {
+    color:white;
+    text-decoration: none;
+}
+
+a:hover
+{
+    text-decoration: underline;
+}
+
+#background {
+    z-index: -1;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+#background canvas
+{
+    display: block; /* prevents scrollbar */
+}
+
+#container
+{
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+#sidewidget
+{
+    width: 200px;
+    height: 100%;
+}
+
+#content
+{
+    width: auto;
+    flex-grow: 1;
+}
+
+.fixed
+{
+    position: fixed;
+}
+
+.z-top
+{
+    z-index: 100;
+}
+
+.top-right
+{
+    top: 0;
+    right: 0;
+}
+
+.box-small
+{
+    margin: var(--small-margin);
+    padding:var(--small-padding);
+
+    border: 1px solid white;
+    background-color: rgba(1,1,1,0.5);
+}
+
+.links
+{
+    margin-bottom: auto;
+    margin-top: auto;
+}
+
+#nav
+{
+    position: fixed;
+    transition: top 500ms ease; 
+    right: 0;
+}
+
+.nav-offscreen
+{
+    top: -100px;
+}
+
+.nav-onscreen
+{
+    top: 0px;
+}
+
+
+.border
+{
+    border: 1px solid white;
+}
+
+
+.box-large
+{
+
+    margin: var(--large-margin);
+    padding:var(--large-padding);
+}
+
+.page
+{
+   z-index: 1;
+}
+
+.page-index-element
+{
+    position: fixed;
+    color: white;
+}
+
+.page-index-element a
+{
+    text-decoration: none;
+}
+
+.posts
+{
+    z-index: 2;
+    display: inline-block;
+}
+
+.fullscreen
+{
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+}
+
+.post-outer {
+    display: inline-block;
+}
+
+.post-columns {
+    display:flex;
+    flex-direction: row;
+    margin-bottom: 25vh;
+    width: 100%;
+}
+
+
+.post-align-right
+{
+    margin-right: auto;
+}
+
+.post-align-left
+{
+    margin-left: auto;
+    order: -1;
+}
+
+.post-title-mobile
+{
+    display: none;
+    padding: var(--large-padding);
+}
+
+.post-title
+{
+    display: block;
+    position: sticky;
+    top: 0;
+    right: 0;
+    padding: 0;
+    width: 50%;
+    padding-left: var(--large-padding);
+}
+
+.post-inner {
+    color: black;
+    display: block;
+    margin-top: 50vh;
+    width: 33%;
+}
+
+.post-content
+{
+    padding: var(--large-padding) var(--large-padding) 0 var(--large-padding);
+}
+
+.post-top
+{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+
+.post-side
+{
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+    width: 50%;
+    height: 100vh;
+    z-index: -2;
+    overflow: hidden;
+}
+
+.sink
+{
+    z-index: -2;
+}
+
+.rect-inner
+{
+    /* z-index: -2; */
+}
+
+.image-inner
+{
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    background-position: center;
+    background-size: cover;
+
+    transition: opacity 1000ms;
+}
+
+.image-inner-show
+{
+    opacity: 1;
+}
+
+.image-inner-hide
+{
+    opacity: 0;
+}
+
+.image-outer
+{
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+@media only screen and (max-width: 800px) {
+    .post-columns{
+       
+        flex-direction: column;
+    }
+
+    .post-inner {
+        width: 80%;
+        margin-top: 0;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .post-side {
+        min-width: 100%;
+        height: 66vh;
+        position: relative;
+    }
+
+    .post-align-left
+    {
+        order: unset;
+    }
+
+    .post-top
+    {
+        justify-content: flex-end
+    }
+
+    .post-title-mobile
+    {
+        display: inline-block;
+    }
+
+    .post-title
+    {
+        display: none;
+    }
+
+    .image-inner
+    {
+        width: 150%;
+        height: 150%;
+    }
+
+    /*
+        These alignments don't affect column alignment because of display: flex
+        but will place the titles on the opposite side of the content on mobile
+    */
+    .post-align-left
+    {
+        float: left;
+        margin-left: 0;
+    }
+    .post-align-right
+    {
+        float: right;
+        margin-right: 0;
+    }
+  }

@@ -1,0 +1,12 @@
+{
+    "pageId" : "404",
+    "title" : "404 - Page not found",
+    "index" : [
+        {
+            "title" : "404"
+        },
+        {
+            "title" : "Not found"
+        }
+    ]
+}

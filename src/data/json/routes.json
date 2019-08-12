@@ -1,0 +1,15 @@
+[{ 
+    "title" : "Home",
+    "path" : "/",
+    "pageId" : "home"
+},
+{ 
+    "title" : "Portfolio",
+    "path" : "/portfolio",
+    "pageId" : "portfolio"
+},
+{ 
+    "title" : "About",
+    "path" : "/about",
+    "pageId" : "about"
+}]
