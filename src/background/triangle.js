@@ -56,7 +56,17 @@ export default class Triangle
         return (boundingRect.right - boundingRect.left) * (boundingRect.bottom - boundingRect.top);
     }
 
-
+    /**
+     * Returns the center point of this triangle as an object with x and y
+     */
+    getCenterCoordinate()
+    {
+        const { offX, offY, points } = this;
+        return {
+            x : (points[0] + points[2] + points[4]) / 3 + offX,
+            y : (points[1] + points[3] + points[5]) / 3 + offY
+        }
+    }
 
 
     /**
@@ -192,13 +202,10 @@ export default class Triangle
 
     /**
      * Returns true when this triangle is fully contained by a rect
-     * specifcy optional custom offset, if undefined will use triangle's internal offset
      */
-    fullyInRect = (rect, customOffX, customOffY ) =>
+    fullyInRect = (rect) =>
     {
-        const { points } = this;
-        const offX = customOffX ? customOffX : this.offX;
-        const offY = customOffY ? customOffY : this.offY;
+        const { points, offX, offY } = this;
 
         // check if ALL of the triangle points are within the rect
         for (let i = 0; i < 6; i += 2)
@@ -217,6 +224,33 @@ export default class Triangle
 
         return true;
     }
+
+    /**
+     * Returns true when this triangle is fully contained by a rect, whithout this triangles scroll offset applied
+     */
+    fullyInRectNoOffset = (rect) =>
+    {
+        const { points } = this;
+
+
+        // check if ALL of the triangle points are within the rect
+        for (let i = 0; i < 6; i += 2)
+        {
+            const x = points[i] ;
+            const y = points[i + 1] ;
+
+            if ((x < rect.left) ||
+                (x > rect.right) ||
+                (y < rect.top) ||
+                (y > rect.bottom))
+                {
+                    return false;
+                }
+        }
+
+        return true;
+    }
+
 
 
     /**

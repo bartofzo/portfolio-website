@@ -1,7 +1,7 @@
 import React from 'react';
 import { throttle } from '../util/throttle.js';
 
-class InnerImage extends React.Component
+class RectImage extends React.Component
 {
     constructor(props)
     {
@@ -66,7 +66,7 @@ class InnerImage extends React.Component
         }
 
         if (images.length > 0)
-            this.intervalHandle = setInterval(this.interval, this.props.interval || 5000);
+            this.intervalHandle = setInterval(this.interval, this.props.interval || 10000);
     }
 
     onInvisible = () => {
@@ -83,24 +83,52 @@ class InnerImage extends React.Component
         this.setState({ currentIndex : (this.state.currentIndex + 1) % this.props.images.length });
     }
 
+    onThumbnailClick = (index) => {
+
+        this.setState({ currentIndex : index});
+
+        if (this.intervalHandle)
+        {
+            // stop changing pics automatically
+            clearInterval(this.intervalHandle);
+        }
+
+        this.props.onLargeImage(this.props.images[index]);
+    }
+
     render()
     {
         const { currentIndex } = this.state;
         const images = this.props.images || [];
+        const imageContainerHeight = images.length > 1 ? '75%' : '100%';
      
         return (
-            <div className="images-container" ref={this.ref}>
-                <div className={`image-outer rect-inner ${this.props.align} ${(this.props.small ? 'small' : '')}`}>
+            <div className="rect-images-container" ref={this.ref}> 
+                <div className="rect-image-container" style={{height : imageContainerHeight}}>
                     { images.map((image, index) => 
-                        
+                       
                         <div 
                             key={index}
                             style={{ backgroundImage : `url(${require(`../assets/${image.src}`)}`}}
-                            className={`image-inner ${(index === currentIndex ? 'image-inner-show' : 'image-inner-hide')}`} />
+                            className={`rect-image ${(index === currentIndex ? 'show' : 'hide')}`} />
 
                     )}
                 </div>
+
+                { images.length > 1 ? 
+                <div className="rect-images-thumbnails-container">
+                { images.map((image, index) => 
+                    <div key={index} className="rect-image-thumbnail-container"  onClick={() => this.onThumbnailClick(index)}>
+                        <div 
+                            key={index}
+                            style={{ backgroundImage : `url(${require(`../assets/${image.src}`)}`}}
+                            className={`rect-image thumbnail`} />
+                     </div>
+
+                    )}
+                </div> : null }
+               
             </div>)
     }
 }
-export default InnerImage;
+export default RectImage;

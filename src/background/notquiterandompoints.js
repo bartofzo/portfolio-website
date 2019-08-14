@@ -1,32 +1,23 @@
-Number.prototype.mod = function(n) {
-    return ((this%n)+n)%n;
-}
+import { hslToRgb } from '../util/colorhelper.js';
 
 class NotQuiteRandomPoints
 {
-    constructor(w, h, indexHeight, indexAmt, restAmt)
+    constructor(w, h, indexHeight, indexAmt, restAmt, callback)
     {   
         this.w = w;
         this.h = h;
 
-        const straight = restAmt / 10;
-        
-      
-        this.flatArray = new Float32Array(8 + 2 * (indexAmt + restAmt + straight));
+        const totalXedge = restAmt / 10;
+        const totalColumnEdge = totalXedge;
+        const totalIndexYedge = 24;
+        const columnWidth = 800;
+        const columnMargin = 10;
 
-        // Always fill corners of the entire playground
-        this.flatArray[0] = 0;
-        this.flatArray[1] = 0;
-        this.flatArray[2] = w;
-        this.flatArray[3] = 0;
-        this.flatArray[4] = w;
-        this.flatArray[5] = h;
-        this.flatArray[6] = 0;
-        this.flatArray[7] = h;
-        
+        this.flatArray = new Float32Array(2 * (indexAmt + restAmt + totalXedge + totalIndexYedge + totalColumnEdge));
+
 
         // fill up index space:
-        for (let i = 8; i < indexAmt; i += 2)
+        for (let i = 0; i < indexAmt; i += 2)
         {
             this.flatArray[i] =  Math.random() * w;
             this.flatArray[i + 1] = Math.random() * indexHeight;
@@ -35,7 +26,7 @@ class NotQuiteRandomPoints
         let n = 0;
         for (let i = 0; i < restAmt; i++)
         {
-            n = 8 + (indexAmt * 2) + i * 2;
+            n = (indexAmt * 2) + i * 2;
 
             // prefer center X
             /*
@@ -58,10 +49,10 @@ class NotQuiteRandomPoints
         }
 
 
-        for (let i = 0; i < straight; i += 2)
+        for (let i = 0; i < totalXedge; i += 2)
         {
-            n = 8 + (indexAmt * 2) + (restAmt * 2) + i * 2;
-            const y = (i / straight) * h;
+            n = 2 * (indexAmt + restAmt) + i * 2;
+            const y = (i / totalXedge) * h;
             this.flatArray[n] = w;
             this.flatArray[n + 1] = y;
 
@@ -69,53 +60,42 @@ class NotQuiteRandomPoints
             this.flatArray[n + 3] = y;
         }
 
- 
-
-    }
-
-    update()
-    {
-        const { flatArray, flatArrayOrig, w, h } = this;
-        const now = performance.now();
-        
-        for (let i = 8; i < this.flatArray.length; i += 2)
+        for (let i = 0; i < totalColumnEdge; i += 2)
         {
-            flatArray[i] = flatArrayOrig[i] + 10 * Math.sin(now / (300 * (i % 10)));
-            flatArray[i + 1] = flatArrayOrig[i + 1] + 10 * Math.sin(now / (400 * (i % 10)));
+            n = 2 * (indexAmt + restAmt + totalXedge) + i * 3;
+            const y = indexHeight + (i / totalColumnEdge) * (h - indexHeight);
+
+            this.flatArray[n] = (w / 2) - columnWidth / 2 - columnMargin - (columnMargin * Math.random());
+            this.flatArray[n + 1] = y;
+
+            this.flatArray[n + 2] =  (w / 2) + columnWidth / 2 + columnMargin + (columnMargin * Math.random());
+            this.flatArray[n + 3] = y;
+
+            // Center x line for posts that have no images
+            this.flatArray[n + 4] =  (w / 2);
+            this.flatArray[n + 5] = y;
         }
-    }
 
-    /*
-    update()
-    {
-        const { flatArray, flatArrayVelocity, w, h } = this;
-
-        for (let i = 8; i < this.flatArray.length; i += 2)
+        for (let i = 0; i < totalIndexYedge; i += 2)
         {
-            flatArray[i] = (flatArray[i] + flatArrayVelocity[i]).mod(w);
-            flatArray[i + 1] = (flatArray[i + 1] + flatArrayVelocity[i + 1]).mod(h);
+            n = 2 * (indexAmt + restAmt + totalXedge + totalColumnEdge) + i * 2;
+            const x = (i / totalIndexYedge) * w;
 
-            flatArrayVelocity[i] *= 0.99;
-            flatArrayVelocity[i + 1] *= 0.99;
+            this.flatArray[n] = x;
+            this.flatArray[n + 1] = indexHeight - (columnMargin * Math.random());
+
+            this.flatArray[n + 2] = x;
+            this.flatArray[n + 3] = 0;
         }
+
+        callback(this);
     }
-    */
 
-
-    nudge(x, y, indices)
+    getColor = (point) =>
     {
-
-        const { flatArrayDelta, flatArrayVelocity } = this;
-
-        for (let i = 0; i < indices.length; i += 2)
-        {
-            flatArrayVelocity[indices[i]] += 0.001 * x;
-            flatArrayVelocity[indices[i + 1]] += 0.001 * y;
-        }
+        const x01 = point.x / this.w;
+        const y01 = point.y / this.h;
+        return hslToRgb(y01 * Math.random(), 0.75 - 0.5 * x01, Math.random());
     }
-
-  
-
-
 }
 export default NotQuiteRandomPoints;

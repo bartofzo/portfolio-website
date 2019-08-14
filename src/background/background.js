@@ -2,15 +2,15 @@ import * as PIXI from 'pixi.js'
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import NotQuiteRandomPoints from './notquiterandompoints.js';
-
+import PointsFromImage from './pointsfromimage.js';
 import AwesomeTriangleSet from './awesometriangleset.js';
-import ColoredTriangle from './coloredtriangle.js';
+import { debounce } from '../util/debounce.js';
 
 import ShaderCode from './shader.js';
 import AwesomeTriangle from './awesometriangle.js';
 import AnimationFrameTail from '../util/animationframetail.js';
 import IndexElements from './indexelements.js';
-import { getAllRects } from './boundingrects.js';
+import { getAllRects, getAllPredictedRects } from './boundingrects.js';
 
 const pointsInIndexCount = 50;
 const pointsInRestCount = 500;
@@ -20,7 +20,7 @@ const oversizedY = 2;
 
 
 const transitionDurations = {
-    outer : 50,
+    outer : 1,
     inner : 1,
     hover : 300,
     pageTransition : 500,
@@ -45,24 +45,12 @@ class Background extends React.Component {
         this.app = new PIXI.Application({ autoResize: true, transparent: true, antialias : true, clearBeforeRender : true })
         this.graphic = new PIXI.Graphics();
         this.borderGraphic = new PIXI.Graphics();
-       
-        
-
-       
-        //this.drawStage = new PIXI.Container();
+      
         this.app.stage.addChild(this.graphic);
         this.app.stage.addChild(this.borderGraphic);
-        //this.app.stage.filters = [new PIXI.filters.NoiseFilter(0.1)];
-
-        //const simpleShader = new PIXI.Filter(null, ShaderCode);
-        //this.app.stage.filters = [simpleShader];
-
     }
 
-    updateNoise()
-    {
-        //this.app.stage.filters[0].seed = Math.random();
-    }
+
 
     updatePixiCnt = (element) => {
         // the element is the DOM object that we will use as container to add pixi stage(canvas)
@@ -82,76 +70,14 @@ class Background extends React.Component {
         this.onResize();
     };
 
-    onResize = () => {
-
-        if (!this.props.pageInfo || !this.props.pageInfo.loaded)
-            return;
-
-       
-        this.generate(this.props.pageInfo.pageIndex);
-    }
-
-    generate(pageIndex)
-    {
-       
-        const parent = this.app.view.parentNode;
-
-        this.screenWidth = parent.clientWidth;
-        this.screenHeight = parent.clientHeight;
-        this.totalWidth = this.screenWidth * oversizedX;
-
-        // 
-        this.totalHeight = this.screenHeight + this.screenHeight * oversizedY;
-
-        const { totalWidth , totalHeight } = this;
-
-        this.screenRect = {
-            left : 0,
-            top : 0,
-            right : this.screenWidth,
-            bottom : this.screenHeight
-        };
-
-        this.app.renderer.resize(this.screenWidth, this.screenHeight);
-    
-        this.triangleSet = 
-            new AwesomeTriangleSet(new NotQuiteRandomPoints(
-                totalWidth, 
-                totalHeight, 
-                this.screenHeight,
-                pointsInIndexCount, pointsInRestCount).flatArray,
-            (set, index) => new AwesomeTriangle(set, index, this.animationFrameTail.getLastNow, this.screenHeight, transitionDurations));
-
-        // We must calculate the offsets before we generate the index elements
-        // this will not invoke the onIndexStyles yet
-        this.indexElements = null;
-        this.calculateOffset();
-
-        this.indexElements = new IndexElements(
-            this.triangleSet, 
-            pageIndex, 
-            this.screenRect, 
-            this.zeroOffX, this.zeroOffY, 
-            (triangle, postId) => triangle.mark(postId));
-
-
-        this.updateIndexStyles(); // invoke it manually
-
-        this.animationFrameTail.hijack(() => this.updateRects(true));
-        this.inPageTransition = false;
-        this.triangleSet.setPageTransition(false);
-        this.props.onHover(null);
-
-    }
 
     onPageLoaded(pageInfo)
     {
-        const { pageIndex } = pageInfo;
-        this.generate(pageIndex);
+        this.generate(pageInfo);
     }
 
     componentDidMount() {
-
+        this.onResize = debounce(this.onResize, 100);
         window.addEventListener('resize', this.onResize);
         window.addEventListener('scroll', this.onScroll);
     }
@@ -161,6 +87,89 @@ class Background extends React.Component {
         window.removeEventListener('resize', this.onResize);
         window.removeEventListener('scroll', this.onScroll);
     }
+
+    onResize = () => {
+        if (!this.props.pageInfo || !this.props.pageInfo.loaded)
+            return;
+
+        this.generate(this.props.pageInfo);
+    }
+
+    generate(pageInfo)
+    {
+        const { pageIndex, backgroundImage } = pageInfo;
+
+        const parent = this.app.view.parentNode;
+        this.screenWidth = parent.clientWidth;
+        this.screenHeight = parent.clientHeight;
+        this.totalWidth = this.screenWidth * oversizedX;
+        this.prevScrollX = window.scrollX;
+        this.prevScrollY = window.scrollY;
+        this.totalHeight = this.screenHeight + this.screenHeight * oversizedY;
+
+        const { totalWidth , totalHeight } = this;
+        this.screenRect = {
+            left : 0,
+            top : 0,
+            right : this.screenWidth,
+            bottom : this.screenHeight
+        };
+
+        this.loaded = false;
+        this.app.renderer.resize(this.screenWidth, this.screenHeight);
+    
+        const generateAfterPoints = (points) => {
+            this.loaded = true;
+            this.triangleSet = 
+            new AwesomeTriangleSet(points.flatArray,
+                (set, index) => 
+                new AwesomeTriangle(set, index, this.animationFrameTail.getLastNow, points.getColor, transitionDurations));
+
+            // We must calculate the offsets before we generate the index elements
+            // this will not invoke the onIndexStyles yet
+            this.indexElements = null;
+            this.calculateOffset();
+
+            this.indexElements = new IndexElements(
+                this.triangleSet, 
+                pageIndex, 
+                this.screenRect,
+                (triangle, postId) => triangle.mark(postId));
+
+
+            this.updateIndexStyles(); // invoke it manually
+
+            this.animationFrameTail.hijack(() => this.updateRects(true));
+            this.inPageTransition = false;
+            this.triangleSet.setPageTransition(false);
+            this.props.onHover(null);
+
+        }
+
+        // if a bg image is specified, generate from that
+        if (backgroundImage)
+        {
+            new PointsFromImage(
+                backgroundImage,
+                totalWidth, 
+                totalHeight, 
+                this.screenHeight,
+                pointsInIndexCount, 
+                pointsInRestCount, 
+                generateAfterPoints);
+        }
+        else
+        {
+            new NotQuiteRandomPoints(
+                totalWidth, 
+                totalHeight, 
+                this.screenHeight,
+                pointsInIndexCount, 
+                pointsInRestCount, 
+                generateAfterPoints)
+        }
+    }
+
 
     componentWillReceiveProps(nextProps)
     {
@@ -180,6 +189,9 @@ class Background extends React.Component {
     calculateOffset()
     {
 
+        if (!this.loaded)
+            return;
+
         const { totalWidth, totalHeight, screenWidth, screenHeight } = this;
         const docHeight = (document.height !== undefined) ? document.height : document.body.offsetHeight;
         const docWidth = (document.width !== undefined) ? document.width : document.body.offsetWidth;
@@ -190,27 +202,29 @@ class Background extends React.Component {
             return;
         }
 
-        let x01 = 0.4;
-        let y01 = 0.1;
+        let x01 = 0;
+        let y01 = 0;
 
         // Default offset
-        this.zeroOffX = -x01 * (totalWidth - screenWidth);
-        this.zeroOffY = -y01 * (totalHeight - screenHeight);
+        this.zeroOffX = 0;
+        this.zeroOffY = 0;
 
 
-        y01 +=  0.95 * (window.scrollY / docHeight); 
-        
-        y01 = Math.min(1, y01);
+        y01 = Math.max(0, window.scrollY - screenHeight) / (docHeight);
+
         
         this.offX = -x01 * (totalWidth - screenWidth);
         this.offY = -y01 * (totalHeight - screenHeight);
+
+
+        this.offY = Math.max(-screenHeight, -window.scrollY) - (y01 * (totalHeight - 2 * screenHeight));
+        //if (this.offY <)
 
         
         this.triangleSet.setOffset(this.offX, this.offY);
 
         // Push new index styles
         this.updateIndexStyles();
-        this.updateNoise();
     }
 
     /**
@@ -241,6 +255,9 @@ class Background extends React.Component {
 
 
     draw = () => {
+        if (!this.loaded)
+            return;
+
         const { triangleSet, graphic, borderGraphic, app, screenRect } = this;
 
         graphic.clear();
@@ -287,7 +304,6 @@ class Background extends React.Component {
     onPageSwitch = (first) => {
 
         this.inPageTransition = true;
-
         this.triangleSet.setPageTransition(true);
         this.animationFrameTail.poke();
 
@@ -302,14 +318,24 @@ class Background extends React.Component {
 
     updateRects = (imm) => {
 
-        this.triangleSet.provideRects(getAllRects('rect-inner'), getAllRects('rect-outer'), this.screenRect, imm);
+        if (!this.loaded)
+            return;
+
+        const deltaX = window.scrollX - this.prevScrollX;
+        const deltaY = window.scrollY - this.prevScrollY;
+       
+        this.prevScrollX = window.scrollX;
+        this.prevScrollY = window.scrollY;
+
+        this.triangleSet.provideRects(getAllRects('rect-inner', deltaX, deltaY), getAllRects('rect-outer', deltaX, deltaY), this.screenRect, imm);
+        //this.triangleSet.provideRects(getAllPredictedRects('rect-inner', deltaX, deltaY), getAllPredictedRects('rect-outer', deltaX, deltaY), this.screenRect, imm);
     }
     
 
     onMouseMove = (e) =>
     {
         // Case when page isn't generated yet
-        if (!this.triangleSet)
+        if (!this.triangleSet || !this.loaded)
             return;
 
         const triangle = this.triangleSet.getNonBlockingMarkedTriangleFromPoint(e.data.global.x, e.data.global.y);

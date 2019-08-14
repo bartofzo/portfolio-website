@@ -4,9 +4,10 @@ body {
     color: white;
 
     /*
-    background-image: url('../assets/code.png');
+    background-image: url('../assets/bg.jpg');
     background-size: contain;
     */
+    
 
 
     --small-margin: 10px;
@@ -83,6 +84,8 @@ a:hover
     z-index: 100;
 }
 
+
+
 .top-right
 {
     top: 0;
@@ -91,18 +94,13 @@ a:hover
 
 .box-small
 {
-    margin: var(--small-margin);
+    margin: var(--large-padding);
     padding:var(--small-padding);
 
     border: 1px solid white;
     background-color: rgba(1,1,1,0.5);
 }
 
-.links
-{
-    margin-bottom: auto;
-    margin-top: auto;
-}
 
 #nav
 {
@@ -138,7 +136,12 @@ a:hover
 .page
 {
    z-index: 1;
+
 }
+
+
+
+
 
 .page-index-element
 {
@@ -153,8 +156,19 @@ a:hover
 
 .posts
 {
-    z-index: 2;
+    z-index: 1;
     display: inline-block;
+    width: 100%;
+
+    padding-top: 100px;
+
+    transform: scale(1);
+    transition: scale 2000ms;
+}
+
+.posts.hide
+{
+    transform: scale(0);
 }
 
 .fullscreen
@@ -165,63 +179,200 @@ a:hover
     z-index: 0;
 }
 
-.post-outer {
-    display: inline-block;
+.post-container {
+    display: flex;
+    width: 800px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    margin-bottom: 200px;
+    position: relative;
 }
 
-.post-columns {
-    display:flex;
-    flex-direction: row;
-    margin-bottom: 25vh;
-    width: 100%;
-}
-
-
-.post-align-right
+.post-links
 {
+    position: absolute;
+    z-index: 10;
+    bottom: 0;
+    right: 0;
+    display: inline-block;
+    transform: translate(0, 100%);
+    color: white;
+    margin: var(--large-padding) var(--large-padding) 0 var(--large-padding);
+}
+
+.post-links.mobile
+{
+    display: none;
+}
+
+
+.post-images-container {
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+    width: 50%;
+    height: 400px;
+}
+
+.post-images-container.left
+{
+    order: 1;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+    margin: 0;
+    line-height: 100%;
+}
+
+.post-content-container {
+    
+    width: 50%;
+    color: black;
+    padding-left: var(--large-padding);
+    padding-right: var(--large-padding);
+}
+
+.post-content-container.left {
     margin-right: auto;
 }
 
-.post-align-left
+.post-content-container.right
 {
     margin-left: auto;
-    order: -1;
 }
 
-.post-title-mobile
+
+.post-content
 {
-    display: none;
-    padding: var(--large-padding);
+    min-height: 400px;
+    position: relative;
 }
 
-.post-title
+.rect-images-container
 {
-    display: block;
-    position: sticky;
+    width: 100%;
+    height: 100%;
+}
+
+.rect-images-thumbnails-container
+{
+    height: 25%;
+    width: 100%;
+
+    display: flex;
+    justify-content: space-around;
+
+    padding: 0 var(--large-padding) var(--large-padding) var(--large-padding);
+}
+
+.rect-image-thumbnail-container
+{
+    position: relative;
+    flex-grow: 1;
+    margin-right: var(--large-padding);
+    cursor: pointer;
+}
+
+.rect-image-thumbnail-container:last-child
+{
+    margin-right: 0;
+}
+
+.rect-image-container
+{
+    position: relative;
+    width: 100%;
+    height: 75%;
+    background: white;
+}
+
+
+.rect-image
+{
+    position: absolute;
+
+    left: var(--large-padding);
+    top: var(--large-padding);
+    right: var(--large-padding);
+    bottom: var(--large-padding);
+
+    transition: opacity 1000ms;
+    background-size: cover;
+}
+
+.rect-image.thumbnail
+{ 
+    position: absolute;
     top: 0;
+    left: 0;
     right: 0;
-    padding: 0;
-    width: 50%;
-    padding-left: var(--large-padding);
+    bottom: 0;
 }
+
+
+.large-image-container
+{
+    position: fixed;
+    z-index: 20;
+    left: 50%;
+    right: 50%;
+    top: 50%;
+    bottom: 50;
+    transition: all 2000ms;
+}
+
+.large-image-container.show
+{
+    left: 10%;
+    right: 10%;
+    top: 10%;
+    bottom: 10%;
+}
+
+
+.rect-image.show
+{
+    opacity: 1;
+}
+
+.rect-image.hide
+{
+    opacity: 0;
+}
+
+
+
 
 .post-inner {
     color: black;
     display: block;
-    margin-top: 50vh;
+    /*
+    margin-top: 25vh;
+    */
     width: 33%;
+    max-width: 600px;
 }
 
-.post-content
+
+p
 {
-    padding: var(--large-padding) var(--large-padding) 0 var(--large-padding);
+    padding: 0;
+    margin-top: var(--large-padding);
+    margin-bottom: var(--large-padding);
 }
 
-.post-top
+.post-title-container
 {
-    display:flex;
-    flex-direction: row;
-    justify-content: space-between;
+    color:black;
+    margin-top: var(--large-padding);
+}
+
+.post-title-container.mobile
+{
+    display: none;
 }
 
 
@@ -230,10 +381,11 @@ a:hover
     position: -webkit-sticky; /* Safari */
     position: sticky;
     top: 0;
-    width: 50%;
+    
     height: 100vh;
     z-index: -2;
     overflow: hidden;
+    flex-grow: 1;
 }
 
 .sink
@@ -270,70 +422,101 @@ a:hover
     opacity: 0;
 }
 
+
+
 .image-outer
 {
     overflow: hidden;
     width: 100%;
     height: 100%;
+    position: relative;
+    max-width: 1280px;
+}
+
+.image-outer.small
+{
+    width: 66%;
+    height: 66%;
+   
+}
+
+/*
+    Small image for right aligned post should attach to text
+    not neccessary for left side post because it will stick automatically
+*/
+.image-outer.small.right
+{
+    margin-left: auto;
 }
 
 @media only screen and (max-width: 800px) {
-    .post-columns{
-       
+    .post-container
+    {
+        width: 100%;
         flex-direction: column;
     }
 
-    .post-inner {
+    .post-content-container
+    {
         width: 80%;
-        margin-top: 0;
-        margin-left: auto;
-        margin-right: auto;
     }
 
-    .post-side {
-        min-width: 100%;
-        height: 66vh;
+    .post-images-container
+    {
+        width: 100%;
         position: relative;
     }
 
-    .post-align-left
+    /*
+        Cancel ordering, mobile it's all the same
+    */
+    .post-images-container.left
     {
-        order: unset;
+        order: 0;
     }
 
-    .post-top
+
+    .post-title-container
     {
-        justify-content: flex-end
+        display: none;
+    }
+    .post-title-container.mobile
+    {
+        display: block;
+        width: 80%;
+        padding-left: var(--large-padding);
+        padding-right: var(--large-padding);
+
     }
 
-    .post-title-mobile
+    .post-title-container.mobile.left
     {
-        display: inline-block;
+        margin-right: auto;
     }
 
-    .post-title
+    .post-title-container.mobile.right
+    {
+        margin-left: auto;
+    }
+
+    .post-title-container.mobile.aboveimage
+    {
+        margin-left: 0;
+        margin-right: auto;
+    }
+
+    .post-links
     {
         display: none;
     }
 
-    .image-inner
+    .post-links.mobile
     {
-        width: 150%;
-        height: 150%;
-    }
+        position: relative;
 
-    /*
-        These alignments don't affect column alignment because of display: flex
-        but will place the titles on the opposite side of the content on mobile
-    */
-    .post-align-left
-    {
-        float: left;
-        margin-left: 0;
+        display: inline-block;
+        transform: translateX(0);
+        margin: 0;
     }
-    .post-align-right
-    {
-        float: right;
-        margin-right: 0;
-    }
-  }
+}
+

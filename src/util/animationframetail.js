@@ -42,6 +42,10 @@ export default class AnimationFrameTail
         this.poke();
     }
 
+    throttle = (callback) => {
+        
+    }
+
     frame = () =>
     {
         this._now = performance.now();

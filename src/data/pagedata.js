@@ -16,7 +16,6 @@ async function getPage(pageId)
     }
     catch
     {
-        console.log('dfg');
         return notFound;
     }
 }

@@ -17,7 +17,9 @@ class TriangleSet
     {
         this.delaunator = new Delaunator(points);
         this.points = points;
+       
         this.triangles = [];
+        this.uniqueIndexCounter = new Uint8Array(points.length);
 
         // Generate all triangle objects
         for (let i = 0; i < this.delaunator.triangles.length / 3; i++)
@@ -25,7 +27,7 @@ class TriangleSet
             this.triangles.push(newTriangleCallback(this, i));
         }
 
-        // console.log('Constructed ' + this.triangleCount + ' triangles from ' + (points.length / 2) + ' points');
+       
     }
 
     forEach(callback)

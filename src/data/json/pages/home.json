@@ -1,31 +1,83 @@
 {
     "pageId" : "home",
-    "title" : "Home page",
+    "title" : "Home",
     "content" : "hello world",
+    "backgroundImage" : 
+    {
+        "src" : "gradient.jpg"
+    },
     "posts" : 
     [
         "flux",
-        "welcome"
+        "bio",
+        "bio_music",
+        "bio_developer"
+        
     ],
+
     "index" : [
         {
-            "title" : "Welcome",
-            "post" : "welcome"
+            "title" : "Welcome"
+        },
+        {
+            "title" : "Bart"
+        },
+        {
+            "title" : "van de Sande"
+        },
+        {
+            "title" : "Developer"
         },
 
         {
-            "title" : "FLUX",
-            "post" : "flux"
+            "title" : "Musician"
         },
 
         {
-            "title" : "post2",
-            "post" : "post2"
+            "title" : "Creator"
         },
 
         {
-            "title" : "post3",
-            "post" : "post3"
+            "title" : "Jazz"
+        },
+
+        {
+            "title" : "Guitar"
+        },
+
+        {
+            "title" : "Electronic"
+        },
+
+        {
+            "title" : "Technology"
+        },
+
+        {
+            "title" : "Games"
+        },
+
+        {
+            "title" : "Web"
+        },
+
+        {
+            "title" : "Beats"
+        },
+
+        {
+            "title" : "Teaching"
+        }
+        ,
+        {
+            "title" : "Brad"
+        },
+        {
+            "title" : "Coleman"
+        }
+        ,
+        {
+            "title" : "Nonline"
         }
     ]
 }

@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Post from './post.js';
 import Posts from './posts.js';
 import PageIndex from './pageindex.js';
 import getPage from '../data/pagedata.js';
 import SmoothScrollWindow from '../util/smoothscrollwindow.js';
+import LargeImage from './largeimage.js';
+import { Helmet } from 'react-helmet';
 
 function Page(props)
 {
 
     const { pageId } = props;
     const [page, setPage] = useState({});
+    const [largeImage, setLargeImage] = useState(null);
+
     const [pageIndexElements, setPageIndexElements] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -47,7 +50,8 @@ function Page(props)
 
             const pageInfo = {
                 loaded : true,
-                pageIndex :  createPageIndex(loadedPage)
+                pageIndex :  createPageIndex(loadedPage),
+                backgroundImage : loadedPage.backgroundImage
             }
            
             setPageIndexElements(pageInfo.pageIndex);
@@ -65,12 +69,18 @@ function Page(props)
     const style = props.hoverIndexPostId ? { cursor : 'pointer' } : null;
 
     return (
-        <div className="page" ref={pageRef} style={style} onClick={() => onIndexClick(props.hoverIndexPostId)}>
+        <React.Fragment>
+            <Helmet>
+                <title>{`${page.title} | Bart van de Sande`}</title>
+            </Helmet>
+            <div className="page" ref={pageRef} style={style} onClick={() => onIndexClick(props.hoverIndexPostId)}>
 
-            <PageIndex pageIndexElements={pageIndexElements} indexStyles={props.indexStyles} onClick={onIndexClick} />
-            <Posts posts={page.posts} setRef={setPostRef} />
-            
-        </div>
+                <PageIndex pageIndexElements={pageIndexElements} indexStyles={props.indexStyles} onClick={onIndexClick} />
+                <Posts posts={page.posts} setRef={setPostRef} onLargeImage={setLargeImage} hide={largeImage} />
+                <LargeImage image={largeImage} onClose={() => setLargeImage(null)} />
+
+            </div>
+        </React.Fragment>
     )
 }
 

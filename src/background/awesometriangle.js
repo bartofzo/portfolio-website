@@ -3,13 +3,12 @@
 import Triangle from './triangle.js'
 import * as PIXI from 'pixi.js'
 import MathHelper from '../util/mathhelper.js';
-import { hslToRgb } from '../util/colorhelper.js';
 import SmoothBoolean from '../util/smoothboolean.js';
 
 
 
 export default class AwesomeTriangle extends Triangle {
-    constructor(triangleSet, index, getTime, indexHeight, transitionDurations) {
+    constructor(triangleSet, index, getTime, getColor, transitionDurations) {
         super(triangleSet, index);
 
         this.getTime = getTime;
@@ -28,28 +27,7 @@ export default class AwesomeTriangle extends Triangle {
         this.aniInner = new SmoothBoolean(transitionDurations.inner, getTime);
         this.aniPageTransition = new SmoothBoolean(transitionDurations.pageTransition, getTime, this.pageTransition);
 
-        let indexMul = 0.25 + 0.75 * (this.index / triangleSet.triangleCount);
-       
-
-        const middleY = (this.points[1] + this.points[3] + this.points[5]) / 3;
-        let overIndex = Math.min(1,0.5 * middleY/ indexHeight);
-        //const lightness = overIndex + (1 - overIndex) * Math.random();
-        const lightness = Math.random();
-
-        let color = hslToRgb(indexMul * Math.random(), 0.75 - 0.5 * overIndex, lightness);
-
-
-        /*
-        let r = Math.random();
-        color[0] = indexMul * r;
-        color[1] = indexMul * r;
-        color[2] = indexMul * r;
-        */
-
-        color[0] = Math.min(1, Math.max(0, color[0]));
-        color[1] = Math.min(1, Math.max(0, color[1]));
-        color[2] = Math.min(1, Math.max(0, color[2]));
-        this.originalColor = color;
+        this.originalColor = getColor(this.getCenterCoordinate());
 
         this.outerBorderColorHex = PIXI.utils.rgb2hex(MathHelper.lerpColor(this.originalColor, [1, 1, 1], 0.5));
         this.innerBorderColorHex = PIXI.utils.rgb2hex(MathHelper.lerpColor(this.originalColor, [0, 0, 0], 1));

@@ -1,19 +1,14 @@
 import React, { useState, useEffect, useRef, createRef } from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import getPost from '../data/postdata.js';
-import InnerImage from './innerimage.js';
+import RectImage from './rectimage.js';
 
 const Post = (props) =>
 {
-    const { postId, index } = props;
+    const { postId } = props;
     const [post, setPost] = useState({});
+    const paragraphs = post.paragraphs || [];
     const [isLoaded, setIsLoaded] = useState(false);
-    const images = post.images || [];
-    const sections = post.sections || [];
-
-    //const alignStyle = index % 2 == 0 ? 'post-align-start-right' : 'post-align-start-left';
-    const alignStyle = 'post-align-start-left';
-
 
 	useEffect(() => {
 		async function fetchPost() {
@@ -30,54 +25,67 @@ const Post = (props) =>
         return <div>Loading...</div>
     }
 
-    const alignClass = props.index % 2 === 0 ? 'post-align-right' : 'post-align-left';
-
+    const alignClass = props.index % 2 == 0 ? 'left' : 'right';
 
     return (
-    <div className={`post-outer`} ref={props.setRef}>
 
-         <PostTitle title={post.title} mobile={true} alignClass={alignClass} />
+    <div className="post-container" ref={props.setRef}>
 
-        <div className={`post-columns ${alignClass}`}>
+            <PostTitle title={post.title} mobile={true} alignClass={alignClass} aboveImage={post.images && post.images.length > 0} />
+         
 
-            <PostSide title={post.title} images={post.images} />
-            
-            <div className={`post-inner ${alignClass}`} >
+            { post.images ? 
+            <div className={`post-images-container ${alignClass} rect-outer`}>
+                <PostLinks links={post.links} mobile={false} />
+                <RectImage images={post.images} onLargeImage={props.onLargeImage} />
+            </div> : null }
 
-                <div className="post-top">
-                    <PostTitle title={post.title} mobile={false} />
-                    <PostLinks links={post.links} />
-                </div>
+    
 
-                <div className="post-content rect-outer">
-                    {post.paragraphs.map((paragraph, index) => <React.Fragment key={index}>
+            <div className={`post-content-container ${alignClass} rect-outer`} >
+
+                <PostTitle title={post.title} mobile={false} />
+
+                <div className="post-content">
+
+                    <PostLinks links={post.links} mobile={true} />
+
+                    {paragraphs.map((paragraph, index) => <React.Fragment key={index}>
                         {paragraph.title ? <h2>{paragraph.title}</h2> : null}
                         <p>
                         {paragraph.text}
                         </p>
                     </React.Fragment>)}
                 </div>
+
             </div>
-        </div>
+
+          
+
     </div>)
 }
 
 export default Post;
 
 const PostTitle = (props) => {
-    const { title } = props;
-    const className = props.mobile ? 'post-title-mobile' : 'post-title';
+    const { title, alignClass, aboveImage, mobile } = props;
+    const mobileClass = mobile ? 'mobile' : '';
+    const aboveImageClass = aboveImage ? 'aboveimage' : '';
 
-    return <div className={`${className} ${props.alignClass} rect-outer`}>
+    return <div className={`rect-outer post-title-container ${mobileClass} ${alignClass} ${aboveImageClass}`}>
         { title ? <h1>{title}</h1> : null }
     </div>
 }
 
 const PostLinks = (props) => {
-    const links = props.links || [];
+    if (!props.links)
+        return null;
+
+    const links = props.links;
+    const mobileClass = props.mobile ? 'mobile' : '';
 
     return (
-        <div className={`box-small links`}>
+        <div className={`box-small post-links ${mobileClass}`}>
         {links.map((link, index) => 
                 <React.Fragment key={index}>
                 {index !== 0 ? ' / ' : '' }
@@ -88,11 +96,3 @@ const PostLinks = (props) => {
     </div>)
 }
 
-const PostSide = (props) => {
-    return (
-        <div className="post-side">
-           
-                <InnerImage images={props.images} />
-           
-        </div>)
-}

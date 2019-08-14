@@ -17,7 +17,7 @@ const getTextWidth = (text, font) => {
 
 export default class IndexElements
 {
-    constructor(triangleSet, pageIndex, screenRect, zeroOffX, zeroOffY, markCallback)
+    constructor(triangleSet, pageIndex, screenRect, markCallback)
     {
       
         this.indexStyles = [];
@@ -45,11 +45,12 @@ export default class IndexElements
         this.largestTriangles = triangleSet.getSortedByBoundingRectArea(triangle => 
             !triangle.outer && 
             !triangle.inner && 
-            triangle.fullyInRect(screenRect, zeroOffX, zeroOffY));
+            triangle.fullyInRectNoOffset(screenRect));
         
      
-        for (let i = 0; i < pageIndex.length; i++)
+        for (let i = 0; i < Math.min(this.largestTriangles.length, pageIndex.length); i++)
         {
+
             const triangle = this.largestTriangles[i];
             const r = triangle.getNonOffsetInscribedRect();
             const text = pageIndex[i].title;

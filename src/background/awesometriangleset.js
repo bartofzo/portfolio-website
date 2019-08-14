@@ -25,8 +25,10 @@ class AwesomeTriangleSet extends TriangleSet{
             for (const rect of innerRects)
             {
             
-                triangle.inner |= triangle.fullyInRect(rect);
-                triangle.blocked |= triangle.inner;
+                triangle.blocked |= triangle.touchesRect(rect);
+
+                //triangle.inner |= triangle.fullyInRect(rect);
+                //triangle.blocked |= triangle.inner;
                 
                 /*
                 if (!triangle.inner && triangle.intersectsRect(rect) && triangle.intersectsRect(screenRect))

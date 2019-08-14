@@ -7,12 +7,14 @@ class Posts extends React.Component
     render()
     {
         const posts = this.props.posts || [];
+        const hideClass = this.props.hide ? 'hide' : '';
 
         return (
-            <div className="posts" ref={this.postContainerRef}>
+            <div className={`posts ${hideClass}`} ref={this.postContainerRef}>
                 { posts.map((id, index) => 
 
                     <Post 
+                        onLargeImage={this.props.onLargeImage}
                         index={index}
                         key={id} 
                         postId={id} 
