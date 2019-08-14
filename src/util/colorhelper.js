@@ -12,7 +12,7 @@
  * Modified: Returns array with extra alpha 1 value
  *
  */
-function hslToRgb(h, s, l) {
+function hslToRgb(h, s, l, a = 1) {
     var r, g, b;
 
     if(s === 0){
@@ -34,7 +34,7 @@ function hslToRgb(h, s, l) {
         b = hue2rgb(p, q, h - 1/3);
     }
 
-    return [r,g,b];
+    return [r,g,b,a];
 }
 
 exports.hslToRgb = hslToRgb;

@@ -1,8 +1,13 @@
 import * as PIXI from 'pixi.js'
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import NotQuiteRandomPoints from './notquiterandompoints.js';
-import PointsFromImage from './pointsfromimage.js';
+
+import GenerativePoints from './points/generativepoints.js';
+import ImagePoints from './points/imagepoints.js';
+import BorderPoints from './points/borderpoints.js';
+import RandomPoints from './points/randompoints.js';
+
+
 import AwesomeTriangleSet from './awesometriangleset.js';
 import { debounce } from '../util/debounce.js';
 
@@ -11,6 +16,7 @@ import AwesomeTriangle from './awesometriangle.js';
 import AnimationFrameTail from '../util/animationframetail.js';
 import IndexElements from './indexelements.js';
 import { getAllRects, getAllPredictedRects } from './boundingrects.js';
+import CombinedPoints from './points/combinedpoints.js';
 
 const pointsInIndexCount = 50;
 const pointsInRestCount = 500;
@@ -60,13 +66,13 @@ class Background extends React.Component {
             this.pixi_cnt.appendChild(this.app.view); //The setup function is a custom function that we created to add the sprites. We will this below
             this.setup();
         }
+
     };
 
     setup() {
         this.app.renderer.plugins.interaction.on('mousemove', this.onMouseMove);
         //this.app.renderer.plugins.interaction.destroy();
         PIXI.Ticker.shared.destroy();
-
         this.onResize();
     };
 
@@ -119,6 +125,7 @@ class Background extends React.Component {
         this.app.renderer.resize(this.screenWidth, this.screenHeight);
     
         const generateAfterPoints = (points) => {
+
             this.loaded = true;
             this.triangleSet = 
             new AwesomeTriangleSet(points.flatArray,
@@ -146,17 +153,39 @@ class Background extends React.Component {
 
         }
 
+        //generateAfterPoints(new BorderPoints(0,0,this.screenWidth, this.screenHeight, 100));
+        //generateAfterPoints(new RandomPoints(250,250,this.screenWidth, this.screenHeight, 100));
+        new ImagePoints(
+            50, 100,
+            totalWidth, 
+            totalHeight, 5000, 150, 2, 2,
+            require(`../assets/${backgroundImage.src}`), 
+            (imagePoints) => {
+
+                imagePoints.alpha = 0.25;
+                //const indexPoints = new RandomPoints(0,0,this.screenWidth, this.screenHeight, 50);
+                const indexPoints = new ImagePoints(0,0, this.screenWidth, this.screenHeight, 150, 3, 4, 3, require('../assets/gradient.jpg'), 
+                (indexPoints2) => {
+
+                    const randomPoints = new RandomPoints(0,this.screenHeight,this.screenWidth,totalHeight - this.screenHeight, 300);
+                    const borderPoints = new BorderPoints(0,0, this.screenWidth, totalHeight, 100);
+                    generateAfterPoints(new CombinedPoints([randomPoints, borderPoints,indexPoints2, imagePoints]));
+
+                });
+
+
+
+
+            });
+   
+
+        // require(`../../assets/${backgroundImage.src}`
+
         // if a bg image is specified, generate from that
+        /*
         if (backgroundImage)
         {
-            new PointsFromImage(
-                backgroundImage,
-                totalWidth, 
-                totalHeight, 
-                this.screenHeight,
-                pointsInIndexCount, 
-                pointsInRestCount, 
-                generateAfterPoints);
+
         }
         else
         {
@@ -168,6 +197,7 @@ class Background extends React.Component {
                 pointsInRestCount, 
                 generateAfterPoints)
         }
+        */
     }
 
 

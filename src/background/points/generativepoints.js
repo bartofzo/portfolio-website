@@ -1,6 +1,6 @@
-import { hslToRgb } from '../util/colorhelper.js';
+import { hslToRgb } from '../../util/colorhelper.js';
 
-class NotQuiteRandomPoints
+class GenerativePoints
 {
     constructor(w, h, indexHeight, indexAmt, restAmt, callback)
     {   
@@ -88,6 +88,7 @@ class NotQuiteRandomPoints
             this.flatArray[n + 3] = 0;
         }
 
+
         callback(this);
     }
 
@@ -98,4 +99,4 @@ class NotQuiteRandomPoints
         return hslToRgb(y01 * Math.random(), 0.75 - 0.5 * x01, Math.random());
     }
 }
-export default NotQuiteRandomPoints;
+export default GenerativePoints;

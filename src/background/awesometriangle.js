@@ -27,6 +27,7 @@ export default class AwesomeTriangle extends Triangle {
         this.aniInner = new SmoothBoolean(transitionDurations.inner, getTime);
         this.aniPageTransition = new SmoothBoolean(transitionDurations.pageTransition, getTime, this.pageTransition);
 
+        
         this.originalColor = getColor(this.getCenterCoordinate());
 
         this.outerBorderColorHex = PIXI.utils.rgb2hex(MathHelper.lerpColor(this.originalColor, [1, 1, 1], 0.5));
