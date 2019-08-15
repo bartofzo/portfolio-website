@@ -19,15 +19,12 @@ export default class AwesomeTriangle extends Triangle {
         this.pageTransition = true;
         this.hover = false;
         this.blocked = false;
-        this.between = false;
 
-        this.aniOuter = new SmoothBoolean(transitionDurations.outer, getTime);
-        this.aniBetween = new SmoothBoolean(transitionDurations.outer, getTime);
-        this.aniHover = new SmoothBoolean(transitionDurations.hover, getTime, this.hover, 0, 0.5);
-        this.aniInner = new SmoothBoolean(transitionDurations.inner, getTime);
-        this.aniPageTransition = new SmoothBoolean(transitionDurations.pageTransition, getTime, this.pageTransition);
+        this.aniOuter = new SmoothBoolean(transitionDurations.outer.on, transitionDurations.outer.off, getTime);
+        this.aniHover = new SmoothBoolean(transitionDurations.hover.on, transitionDurations.hover.off, getTime, true, this.hover, 0, 0.5);
+        this.aniInner = new SmoothBoolean(transitionDurations.inner.on, transitionDurations.inner.off, getTime);
+        this.aniPageTransition = new SmoothBoolean(transitionDurations.pageTransition.on, transitionDurations.pageTransition.off, getTime, this.pageTransition);
 
-        
         this.originalColor = getColor(this.getCenterCoordinate());
 
         this.outerBorderColorHex = PIXI.utils.rgb2hex(MathHelper.lerpColor(this.originalColor, [1, 1, 1], 0.5));
@@ -58,9 +55,8 @@ export default class AwesomeTriangle extends Triangle {
 
             // Page transition takes precedence over all other color interpolation
             Math.max(
-                aniBetween.getLinear(between),
-                aniOuter.getLinear(outer),
-                aniPageTransition.getLinear(pageTransition)));
+                aniOuter.get(outer),
+                aniPageTransition.get(pageTransition)));
     }
 
     get alpha() {
@@ -69,8 +65,8 @@ export default class AwesomeTriangle extends Triangle {
 
             // Inner transition takes precedence over hover
             Math.max(
-                aniInner.getLinear(inner),
-                aniHover.getLinear(hover)));
+                aniInner.get(inner),
+                aniHover.get(hover)));
     }
 
     /**
@@ -94,6 +90,14 @@ export default class AwesomeTriangle extends Triangle {
         graphic.beginFill(PIXI.utils.rgb2hex(color), alpha);
         this.startingPoint((x, y) => graphic.moveTo(x, y));
         this.forEachLineEndPoint((x2, y2) => graphic.lineTo(x2, y2));
+
+
+        if (this.index === 100)
+        {
+        //    console.log(this.aniOuter.getLinear(this.outer));
+        }
+
+
     }
 
     drawBorder(graphic) {

@@ -24,10 +24,12 @@ class LargeImage extends React.Component
 
     componentWillReceiveProps(nextProps)
     {
+
         if (this.props !== nextProps && nextProps.image)
         {
-            console.log('onlargeimage!')
+
             this.setState({ image : nextProps.image });
+           
         }
     }
 
@@ -35,15 +37,25 @@ class LargeImage extends React.Component
     {
         const { image } = this.props;
         const largeClass = image ? 'show' : '';
+        const triangleClass = image ? 'rect-outer' : '';
 
         return (
-            <div className={`large-image-container ${largeClass} rect-inner`}>
+            <div className={`large-image-container ${largeClass}`} onClick={this.props.onClose}>
                     { image ? 
-                    <div 
-                        onClick={this.props.onClose}
-                        style={{ backgroundImage : `url(${require(`../assets/${image.src}`)}`}}
-                        className={`image-inner`} /> : null }
+                        <img 
+                            src={require(`../assets/${image.src}`)}
+                            className={`large-image rect-outer`} /> : null }
             </div>)
     }
 }
 export default LargeImage;
+
+/*
+                    { image ? 
+                    <div className={`large-image-container-padding ${triangleClass}`}>
+                        <img 
+                            
+                            src={require(`../assets/${image.src}`)}
+                            className={`large-image`} /> : null 
+                    </div> : null}
+                    */

@@ -66,7 +66,7 @@ class RectImage extends React.Component
         }
 
         if (images.length > 0)
-            this.intervalHandle = setInterval(this.interval, this.props.interval || 10000);
+            this.intervalHandle = setInterval(this.interval, this.props.interval || 7000);
     }
 
     onInvisible = () => {
@@ -83,16 +83,7 @@ class RectImage extends React.Component
         this.setState({ currentIndex : (this.state.currentIndex + 1) % this.props.images.length });
     }
 
-    onThumbnailClick = (index) => {
-
-        this.setState({ currentIndex : index});
-
-        if (this.intervalHandle)
-        {
-            // stop changing pics automatically
-            clearInterval(this.intervalHandle);
-        }
-
+    onImageClick = (index) => {
         this.props.onLargeImage(this.props.images[index]);
     }
 
@@ -101,16 +92,22 @@ class RectImage extends React.Component
         const { currentIndex } = this.state;
         const images = this.props.images || [];
         const imageContainerHeight = images.length > 1 ? '75%' : '100%';
-     
+
         return (
-            <div className="rect-images-container" ref={this.ref}> 
+            <div className={`rect-images-container`} ref={this.ref}> 
                 <div className="rect-image-container" style={{height : imageContainerHeight}}>
                     { images.map((image, index) => 
                        
                         <div 
                             key={index}
                             style={{ backgroundImage : `url(${require(`../assets/${image.src}`)}`}}
-                            className={`rect-image ${(index === currentIndex ? 'show' : 'hide')}`} />
+                            className={`rect-image magnifier ${(index === currentIndex ? 'show' : 'hide')}`} 
+                            onClick={() => {
+                                // onClick will only be fired from the topmost element, 
+                                // so we always invoke the current index
+                                this.onImageClick(this.state.currentIndex )
+                            }}
+                            />
 
                     )}
                 </div>
@@ -118,11 +115,11 @@ class RectImage extends React.Component
                 { images.length > 1 ? 
                 <div className="rect-images-thumbnails-container">
                 { images.map((image, index) => 
-                    <div key={index} className="rect-image-thumbnail-container"  onClick={() => this.onThumbnailClick(index)}>
+                    <div key={index} className="rect-image-thumbnail-container"  onClick={() => this.onImageClick(index)}>
                         <div 
                             key={index}
                             style={{ backgroundImage : `url(${require(`../assets/${image.src}`)}`}}
-                            className={`rect-image thumbnail`} />
+                            className={`rect-image thumbnail magnifier`} />
                      </div>
 
                     )}

@@ -10,7 +10,9 @@ export default class AnimationFrameTail
     {
         this._now = performance.now();
         this._tailDuration = tailDuration;
+        this._hijackDuration = 0;
         this._callback = callback;
+        this._hijackCallback = null;
         this._isRunning = false;
     }
 
@@ -37,29 +39,44 @@ export default class AnimationFrameTail
     /**
      * Provide an extra callback to be made before regular callback until the tail has expired
      */
-    hijack = (callback) => {
+    hijack = (callback, duration) => {
+
+        if (duration)
+        {
+            console.log('hijack duration: ' + duration);
+            this._hijackDuration = duration;
+        }
+        else
+        {
+            this._hijackDuration = 0;
+        }
+
         this._hijackCallback = callback;
         this.poke();
     }
 
-    throttle = (callback) => {
-        
+    get isHijacked()
+    {
+        return this._hijackCallback !== null;
     }
 
     frame = () =>
     {
         this._now = performance.now();
-
-        if (this._now - this._pokeTime < this._tailDuration)
+        
+        if (this._now - this._pokeTime < Math.max(this._tailDuration, this._hijackDuration))
         {
             if (this._hijackCallback)
                 this._hijackCallback();
-            
+
+            this._isRunning = true;
             this._callback();
+            
             requestAnimationFrame(this.frame);
         }
         else
         {
+            this._hijackDuration = 0;
             this._hijackCallback = null;
             this._isRunning = false;
         }

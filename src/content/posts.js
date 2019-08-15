@@ -15,6 +15,7 @@ class Posts extends React.Component
 
                     <Post 
                         onLargeImage={this.props.onLargeImage}
+                        hide={this.props.hide}
                         index={index}
                         key={id} 
                         postId={id} 

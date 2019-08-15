@@ -1,13 +1,9 @@
 import * as PIXI from 'pixi.js'
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-
-import GenerativePoints from './points/generativepoints.js';
 import ImagePoints from './points/imagepoints.js';
 import BorderPoints from './points/borderpoints.js';
 import RandomPoints from './points/randompoints.js';
-
-
 import AwesomeTriangleSet from './awesometriangleset.js';
 import { debounce } from '../util/debounce.js';
 
@@ -18,18 +14,16 @@ import IndexElements from './indexelements.js';
 import { getAllRects, getAllPredictedRects } from './boundingrects.js';
 import CombinedPoints from './points/combinedpoints.js';
 
-const pointsInIndexCount = 50;
-const pointsInRestCount = 500;
-
 const oversizedX = 1;
 const oversizedY = 2;
 
 
 const transitionDurations = {
-    outer : 1,
-    inner : 1,
-    hover : 300,
-    pageTransition : 500,
+    outer : { on : 50, off : 350 },
+    inner : { on : 1000, off : 1000 },
+    hover : { on : 50, off : 300 },
+    pageTransition :  { on : 500, off : 500 },
+
     max : 600
 };
 
@@ -66,7 +60,6 @@ class Background extends React.Component {
             this.pixi_cnt.appendChild(this.app.view); //The setup function is a custom function that we created to add the sprites. We will this below
             this.setup();
         }
-
     };
 
     setup() {
@@ -146,7 +139,7 @@ class Background extends React.Component {
 
             this.updateIndexStyles(); // invoke it manually
 
-            this.animationFrameTail.hijack(() => this.updateRects(true));
+            this.animationFrameTail.hijack(() => this.updateRects());
             this.inPageTransition = false;
             this.triangleSet.setPageTransition(false);
             this.props.onHover(null);
@@ -155,23 +148,23 @@ class Background extends React.Component {
 
         //generateAfterPoints(new BorderPoints(0,0,this.screenWidth, this.screenHeight, 100));
         //generateAfterPoints(new RandomPoints(250,250,this.screenWidth, this.screenHeight, 100));
-        new ImagePoints(
-            50, 100,
-            totalWidth, 
-            totalHeight, 5000, 150, 2, 2,
-            require(`../assets/${backgroundImage.src}`), 
+        new ImagePoints(require(`../assets/${backgroundImage.src}`), null, null,null,
             (imagePoints) => {
 
                 imagePoints.alpha = 0.25;
+                generateAfterPoints(new CombinedPoints([ imagePoints ]));
+
                 //const indexPoints = new RandomPoints(0,0,this.screenWidth, this.screenHeight, 50);
-                const indexPoints = new ImagePoints(0,0, this.screenWidth, this.screenHeight, 150, 3, 4, 3, require('../assets/gradient.jpg'), 
+                /*
+                const indexPoints = new ImagePoints(require('../assets/gradient.jpg'), null, this.screenWidth, this.screenHeight,
                 (indexPoints2) => {
 
-                    const randomPoints = new RandomPoints(0,this.screenHeight,this.screenWidth,totalHeight - this.screenHeight, 300);
-                    const borderPoints = new BorderPoints(0,0, this.screenWidth, totalHeight, 100);
-                    generateAfterPoints(new CombinedPoints([randomPoints, borderPoints,indexPoints2, imagePoints]));
+                    const randomPoints = new RandomPoints();
+                    const borderPoints = new BorderPoints();
+                    generateAfterPoints(new CombinedPoints([ indexPoints2, imagePoints]));
 
                 });
+                */
 
 
 
@@ -213,6 +206,11 @@ class Background extends React.Component {
 
                 this.onPageLoaded(nextProps.pageInfo)
             }
+
+            if (nextProps.poke !== this.props.poke)
+            {
+                this.animationFrameTail.hijack(() => this.updateRects(), 2000);
+            }
         }
     }
 
@@ -245,10 +243,7 @@ class Background extends React.Component {
         
         this.offX = -x01 * (totalWidth - screenWidth);
         this.offY = -y01 * (totalHeight - screenHeight);
-
-
         this.offY = Math.max(-screenHeight, -window.scrollY) - (y01 * (totalHeight - 2 * screenHeight));
-        //if (this.offY <)
 
         
         this.triangleSet.setOffset(this.offX, this.offY);
@@ -327,7 +322,13 @@ class Background extends React.Component {
 
         
         this.calculateOffset();
-        this.updateRects();
+
+        // When hijacked there's already a poke from an outer component that is changing the rects,
+        // so we don't need to update the rects again
+        if (!this.animationFrameTail.isHijacked)
+            this.updateRects();
+
+
         this.animationFrameTail.poke();
     }
 

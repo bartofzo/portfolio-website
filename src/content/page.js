@@ -40,6 +40,20 @@ function Page(props)
         }
     }
 
+    const onThumbnailClick = (image) => {
+
+        props.onPoke(performance.now());
+        setLargeImage(image);
+
+    }
+
+    const onThumnailClose = () => {
+
+        props.onPoke(performance.now());
+        setLargeImage(null);
+
+    }
+
 	useEffect(() => {
 		async function fetchPage() {
 
@@ -76,8 +90,8 @@ function Page(props)
             <div className="page" ref={pageRef} style={style} onClick={() => onIndexClick(props.hoverIndexPostId)}>
 
                 <PageIndex pageIndexElements={pageIndexElements} indexStyles={props.indexStyles} onClick={onIndexClick} />
-                <Posts posts={page.posts} setRef={setPostRef} onLargeImage={setLargeImage} hide={largeImage} />
-                <LargeImage image={largeImage} onClose={() => setLargeImage(null)} />
+                <Posts posts={page.posts} setRef={setPostRef} onLargeImage={onThumbnailClick} hide={largeImage} />
+                <LargeImage image={largeImage} onClose={() => onThumnailClose()} onOpen={props.onPoke} />
 
             </div>
         </React.Fragment>

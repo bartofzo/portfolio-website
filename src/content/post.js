@@ -9,7 +9,7 @@ const Post = (props) =>
     const [post, setPost] = useState({});
     const paragraphs = post.paragraphs || [];
     const [isLoaded, setIsLoaded] = useState(false);
-
+ 
 	useEffect(() => {
 		async function fetchPost() {
             const page = await getPost(postId);
@@ -19,30 +19,32 @@ const Post = (props) =>
 		fetchPost();
     }, [postId]); // second [] argument only executes this effect after mounting and not on updates
 
-
+   
     if (!isLoaded)
     {
         return <div>Loading...</div>
     }
 
     const alignClass = props.index % 2 == 0 ? 'left' : 'right';
+    const smallImagesClass = post.smallImages ? 'small' : '';
+    const triangleClass = props.hide ? '' : 'rect-outer';
 
     return (
 
-    <div className="post-container" ref={props.setRef}>
+    <div className={`post-container ${alignClass}`}  ref={props.setRef}>
 
             <PostTitle title={post.title} mobile={true} alignClass={alignClass} aboveImage={post.images && post.images.length > 0} />
          
 
             { post.images ? 
-            <div className={`post-images-container ${alignClass} rect-outer`}>
+            <div className={`post-images-container ${alignClass} ${smallImagesClass} ${triangleClass}`}>
                 <PostLinks links={post.links} mobile={false} />
-                <RectImage images={post.images} onLargeImage={props.onLargeImage} />
+                <RectImage images={post.images} onLargeImage={props.onLargeImage} small={props.smallImages} />
             </div> : null }
 
     
 
-            <div className={`post-content-container ${alignClass} rect-outer`} >
+            <div className={`post-content-container ${alignClass} ${triangleClass}`} >
 
                 <PostTitle title={post.title} mobile={false} />
 

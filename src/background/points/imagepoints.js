@@ -1,49 +1,175 @@
-import * as PIXI from 'pixi.js'
 
+import * as PIXI from 'pixi.js'
+import { throwStatement } from '@babel/types';
 
 
 class ImagePoints
 {
-    constructor(left, top, w, h, maxAmount, treshold, scaleX, scaleY, src, callback)
+    /**
+     * Left / right / bottom / top values are in range of 0-1 ratio of destination Width and Height
+     * Treshold is 0-255
+     */
+    constructor(src, options, destWidth, destHeight, callback)
     {   
-        this.scaleX = scaleX;
-        this.scaleY = scaleY;
+        if (destWidth == null)
+            this.destWidth = window.innerWidth;
+        else
+            this.destWidth = destWidth;
 
-        this.alpha = 1;
-        this.left = left;
-        this.top = top;
-        this.w = w;
-        this.h = h;
+        if (destHeight == null)
+            this.destHeight = window.innerHeight;
+        else
+            this.destHeight = destHeight;
+
+        
+        const defaults = {
+            left : 0,
+            top : 0,
+            right : 0,
+            bottom : null,
+            amount : 1000, 
+            treshold : 25, 
+            scaleX : 1, 
+            scaleY : 1,
+            alpha : 1
+        };
+
+        this.options = Object.assign({}, defaults, options);
+
+        this._scaleX = this.options.scaleX;
+        this._scaleY = this.options.scaleY;
+
+        const { treshold, amount } = this.options;
+
         this.pushArray = [];
         
         this.loadImage((src), () => {
 
             const { parsedImage } = this;
 
+            this.setScaling();
      
             const area = parsedImage.width * parsedImage.height;
-            const areaPerPoint = area / maxAmount;
+            const areaPerPoint = area / amount;
             const squareSideLength = Math.sqrt(areaPerPoint);
-            const xStep = Math.max(1, Math.floor(squareSideLength));
-            const yStep = Math.max(1, Math.floor(squareSideLength));
+            const xStep = Math.max(1, (squareSideLength));
+            const yStep = Math.max(1, (squareSideLength));
 
-            for (let x = 0; x < parsedImage.width - xStep; x += xStep)
+            for (let x = 0; x < parsedImage.width + xStep; x += xStep)
             {
-                for (let y = 0; y < parsedImage.height - yStep; y += yStep)
+                for (let y = 0; y < parsedImage.height + yStep; y += yStep)
                 {
                     const avg = this.getDeltaBrightness(x, y,  xStep, yStep);
                     if (avg >= treshold)
                     {
-                        this.pushArray.push((x * this.scaleX) + left);
-                        this.pushArray.push((y * this.scaleY) + top);
+                        this.pushArray.push((x * this._scaleX) + this._left);
+                        this.pushArray.push((y * this._scaleY) + this._top);
+                        
                     }
                 }
             }
 
             this.flatArray = new Float32Array(this.pushArray);
+           
 
             callback(this);
         });
+    }
+
+    setScaling()
+    {
+        const { parsedImage, destWidth, destHeight } = this;
+
+
+        // calculate positioning / scaling
+        let bothLeftRight = false;
+        let bothTopBottom = false;
+
+        if (this.options.left !== null)
+        {
+            this._left = this.options.left;
+           
+            if (this.options.right !== null)
+            {
+                this._scaleX = ((destWidth - this.options.right) - this.options.left) / parsedImage.width;
+                bothLeftRight = true;
+            }
+        }
+        else if (this.options.right !== null)
+        {
+          
+            if (this.options.left !== null)
+            {
+                // left overrides the scaling
+                this._left = this.options.left;
+                this._scaleX = ((destWidth - this.options.right) - this._left) / parsedImage.width;
+                bothLeftRight = true;
+            }
+            else
+            {
+                // No left specified, use image with scaling
+                this._left = (destWidth - this.options.right) - parsedImage.width * this.options.scaleX;
+              
+            }
+        }
+
+        if (this.options.top !== null)
+        {
+            this._top = this.options.top;
+           
+            if (this.options.bottom !== null)
+            {
+                this._scaleY = ((destHeight - this.options.bottom) - this.options.top) / parsedImage.height;
+                bothTopBottom = true;
+            }
+        }
+        else if (this.options.bottom !== null)
+        {
+         
+            if (this.options.top !== null)
+            {
+                // top overrides the scaling
+                this._top = this.options.top;
+                this._scaleY = (this.options.bottom - this._top) / parsedImage.height;
+                bothTopBottom = true;
+
+            }
+            else
+            {
+               
+                // No top specified, use image with scaling
+                this._top = (destHeight - this.options.bottom) - parsedImage.height * this.options.scaleY;
+            }
+        }
+
+        if (bothLeftRight && !bothTopBottom)
+        {
+            if (this.options.top !== null)
+            {
+                this._scaleY = this._scaleX;
+            }
+            else
+            {
+                // calculate top from aspect ratio of image
+                this._scaleY = this._scaleX;
+                this._top = (destHeight - this.options.bottom) - parsedImage.height * this._scaleY;
+                
+            }
+        }
+        else if (bothTopBottom && !bothLeftRight)
+        {
+            if (this.options.left !== null)
+            {
+                // calculate right from aspect ratio of image
+                this._scaleX = this._scaleY;
+            }
+            else
+            {
+                // calculate right from aspect ratio of image
+                this._scaleX = this._scaleY;
+                this._left = (destWidth - this.options.right) - parsedImage.width * this._scaleX;
+            }
+        }
     }
 
     /*
@@ -53,10 +179,10 @@ class ImagePoints
     */
     getPixel(x, y)
     {
-        const { parsedImage, left, top } = this;
+        const { parsedImage } = this;
         const { width, height, data } = parsedImage;
 
-   
+
         if (x  < 0 || x  > width - 1)
         {
             return [0,0,0,0];
@@ -65,11 +191,6 @@ class ImagePoints
         {
             return [0,0,0,0];
         }
-
-        /*
-        const clampX = Math.max(0, Math.min(width - 1, Math.floor(x)));
-        const clampY = Math.max(0, Math.min(height - 1, Math.floor(y)));
-        */
 
         const i = ((Math.floor(y) * width * 4) + Math.floor(x) * 4);
         
@@ -187,9 +308,9 @@ class ImagePoints
 
     getColor = (point) =>
     {
-        const pixel = this.getPixel((point.x - this.left) / this.scaleX, (point.y - this.top) / this.scaleY);
-        
-        return [pixel[0] / 255, pixel[1] / 255, pixel[2] / 255, this.alpha * pixel[3] / 255];
+        const pixel = this.getPixel((point.x - this._left) / this._scaleX, (point.y - this._top) / this._scaleY);
+      
+        return [pixel[0] / 255, pixel[1] / 255, pixel[2] / 255, this.options.alpha * pixel[3] / 255];
     }
 
 }

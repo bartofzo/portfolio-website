@@ -16,6 +16,7 @@ function App() {
 	const [routes, setRoutes] = useState([]);
 	const [pageInfo, setPageInfo] = useState([]);
 	const [indexStyles, setIndexStyles] = useState([]);
+	const [poke, setPoke] = useState(0);
 	const [hoverIndexPostId, sethoverIndexPostId] = useState(0);
 
 
@@ -36,6 +37,7 @@ function App() {
 			</Helmet>
 
 			<Background 
+				poke={poke}
 				onHover={(postId) => sethoverIndexPostId(postId)}
 				pageInfo={pageInfo} 
 				onIndexStyles={(styles) => setIndexStyles(styles)} />
@@ -53,6 +55,7 @@ function App() {
 							<Page 
 								hoverIndexPostId={hoverIndexPostId}
 								indexStyles={indexStyles}
+								onPoke={setPoke}
 								onPageLoaded={(pageInfo) => setPageInfo(pageInfo)}
 								pageId={route.pageId} />
 						
