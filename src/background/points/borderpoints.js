@@ -7,32 +7,26 @@ import { hslToRgb } from '../../util/colorhelper.js';
  */
 class BorderPoints
 {
-    constructor(options)
+    constructor(options, sampler)
     {
         const defaults = {
             left : 0,
             top : 0,
-            amount : 200, 
+            amount : 100, 
             alpha : 1,
+
             width : window.innerWidth,
             height : window.innerHeight,
-            fillPage : true // when true, width and height are ignored and the total page size is used (minus left and top)
         };
 
-        this.options = Object.assign({}, defaults, options);
-        if (this.options.fillPage)
-        {
-            this.options.width = ((document.width !== undefined) ? document.width : document.body.offsetWidth) - this.options.left;
-            this.options.height = ((document.height !== undefined) ? document.height : document.body.offsetHeight) - this.options.top;
-        }
+        this.options = {...defaults, ...options };
+
 
         const { left, top, width, height, amount } = this.options;
-       
-
+ 
         const ratio = width / height;
-       
         const yHalfAmount = Math.floor((amount / ratio) / 4);
-        const xHalfAmount = (amount / 2) - yHalfAmount; //Math.floor((amount) / 4);
+        const xHalfAmount = Math.floor((amount) / 4);
 
         this.flatArray = new Float32Array(4 * (xHalfAmount + yHalfAmount));
 
@@ -41,7 +35,7 @@ class BorderPoints
         for (let i = 0; i < xHalfAmount; i++)
         {
             const n = 4 * i;
-            const x = left + (i / xHalfAmount) * width;
+            const x = left + (i / (xHalfAmount - 1)) * width;
 
             this.flatArray[n] = x;
             this.flatArray[n + 1] = top;
@@ -54,14 +48,16 @@ class BorderPoints
         for (let i = 0; i < yHalfAmount; i++)
         {
             const n = (4 * xHalfAmount) + 4 * i;
-            const y = (i / yHalfAmount) * height;
+            const y = top + (i / (yHalfAmount - 1)) * height;
 
             this.flatArray[n] = left;
-            this.flatArray[n + 1] = y + top;
+            this.flatArray[n + 1] = y;
 
             this.flatArray[n + 2] = width + left;
-            this.flatArray[n + 3] = y + top;
+            this.flatArray[n + 3] = y;
         }
+
+        this.sampler = sampler;
     }
 
     getColor = (point) =>
@@ -71,7 +67,7 @@ class BorderPoints
         const x01 = Math.max(0, Math.min(1, (point.x - left) / width));
         const y01 = Math.max(0, Math.min(1, (point.y - top) / height));
       
-        return hslToRgb(y01 * Math.random(), 0.75 - 0.5 * x01, Math.random(), this.alpha);
+        return this.sampler.getColor(x01, y01);
     }
 }
 export default BorderPoints;

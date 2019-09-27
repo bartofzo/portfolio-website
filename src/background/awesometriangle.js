@@ -16,14 +16,17 @@ export default class AwesomeTriangle extends Triangle {
         // overlap state:
         this.inner = false;
         this.outer = false;
-        this.pageTransition = true;
+        this.pageTransition = false;
         this.hover = false;
         this.blocked = false;
 
         this.aniOuter = new SmoothBoolean(transitionDurations.outer.on, transitionDurations.outer.off, getTime);
         this.aniHover = new SmoothBoolean(transitionDurations.hover.on, transitionDurations.hover.off, getTime, true, this.hover, 0, 0.5);
         this.aniInner = new SmoothBoolean(transitionDurations.inner.on, transitionDurations.inner.off, getTime);
-        this.aniPageTransition = new SmoothBoolean(transitionDurations.pageTransition.on, transitionDurations.pageTransition.off, getTime, this.pageTransition);
+
+        // Note page transition starts in ON state but the var on here is set to off. That way
+        // a triangle always starts white and moves to colored
+        this.aniPageTransition = new SmoothBoolean(transitionDurations.pageTransition.on, transitionDurations.pageTransition.off, getTime, true, true);
 
         this.originalColor = getColor(this.getCenterCoordinate());
 
@@ -90,13 +93,6 @@ export default class AwesomeTriangle extends Triangle {
         graphic.beginFill(PIXI.utils.rgb2hex(color), alpha);
         this.startingPoint((x, y) => graphic.moveTo(x, y));
         this.forEachLineEndPoint((x2, y2) => graphic.lineTo(x2, y2));
-
-
-        if (this.index === 100)
-        {
-        //    console.log(this.aniOuter.getLinear(this.outer));
-        }
-
 
     }
 
@@ -189,7 +185,6 @@ export default class AwesomeTriangle extends Triangle {
                 widestEdgeIndex = i;
             }
         }
-
 
         // The widest edge is the edge we want to project the midpoints of the two other edges to
         // to get the largest rectangle with the correct orientation, so we pick the points on the other two edges

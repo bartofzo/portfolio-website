@@ -43,7 +43,6 @@ export default class AnimationFrameTail
 
         if (duration)
         {
-            console.log('hijack duration: ' + duration);
             this._hijackDuration = duration;
         }
         else

@@ -29,15 +29,29 @@ body, html {
     box-sizing:         border-box;
 }
 
-a {
+/*
+    Make a button look like a link
+*/
+button {
+    border: none;
+    background: none;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 1em;
+    outline: none;
+    padding: 0;
+}
+
+a, button {
     color:white;
     text-decoration: none;
 }
 
-a:hover
+a:hover, button:hover
 {
     text-decoration: underline;
+    cursor: pointer; /* for the buttons */
 }
+
 
 #background {
     z-index: -1;
@@ -84,8 +98,6 @@ a:hover
     z-index: 100;
 }
 
-
-
 .top-right
 {
     top: 0;
@@ -107,6 +119,11 @@ a:hover
     position: fixed;
     transition: top 500ms ease; 
     right: 0;
+}
+
+#footer
+{
+    display: inline-block;
 }
 
 .nav-offscreen
@@ -156,12 +173,9 @@ a:hover
 
 .posts
 {
+    padding-top: 1px; /* 1px padding is here to prevent the top post from touching index triangles */
     z-index: 1;
-    display: inline-block;
     width: 100%;
-
-    padding-top: 100px;
-
     opacity: 1;
     transition: opacity 200ms;
 }

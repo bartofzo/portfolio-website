@@ -4,6 +4,8 @@ import { withRouter } from 'react-router-dom';
 import ImagePoints from './points/imagepoints.js';
 import BorderPoints from './points/borderpoints.js';
 import RandomPoints from './points/randompoints.js';
+import RandomColorSampler from './samplers/randomcolorsampler.js';
+import { getImageColorSamplerAsync } from './samplers/imagecolorsampler.js';
 import AwesomeTriangleSet from './awesometriangleset.js';
 import { debounce } from '../util/debounce.js';
 
@@ -22,9 +24,8 @@ const transitionDurations = {
     outer : { on : 50, off : 350 },
     inner : { on : 1000, off : 1000 },
     hover : { on : 50, off : 300 },
-    pageTransition :  { on : 500, off : 500 },
-
-    max : 600
+    pageTransition : {on : 300, off: 300},
+    max : 1000
 };
 
 
@@ -70,11 +71,6 @@ class Background extends React.Component {
     };
 
 
-    onPageLoaded(pageInfo)
-    {
-        this.generate(pageInfo);
-    }
-
     componentDidMount() {
         this.onResize = debounce(this.onResize, 100);
         window.addEventListener('resize', this.onResize);
@@ -88,16 +84,18 @@ class Background extends React.Component {
     }
 
     onResize = () => {
-        if (!this.props.pageInfo || !this.props.pageInfo.loaded)
+        if (!this.props.page || !this.props.page.loaded)
             return;
 
-        this.generate(this.props.pageInfo);
+        this.generateAndCallTransitionIn(this.props.page);
     }
 
-    generate(pageInfo)
+    /**
+     * Regenerates triangles according to page settings, or of randomize flag is set, does a random background
+     * After it finishes calls transitionIn automatically to fade in the new triangles smoothly
+     */
+    async generateAndCallTransitionIn(page, randomize)
     {
-        const { pageIndex, backgroundImage } = pageInfo;
-
         const parent = this.app.view.parentNode;
         this.screenWidth = parent.clientWidth;
         this.screenHeight = parent.clientHeight;
@@ -106,112 +104,77 @@ class Background extends React.Component {
         this.prevScrollY = window.scrollY;
         this.totalHeight = this.screenHeight + this.screenHeight * oversizedY;
 
-        const { totalWidth , totalHeight } = this;
+        const { totalWidth , totalHeight, screenWidth, screenHeight } = this;
         this.screenRect = {
             left : 0,
             top : 0,
-            right : this.screenWidth,
-            bottom : this.screenHeight
+            right : screenWidth,
+            bottom : screenHeight
         };
 
         this.loaded = false;
-        this.app.renderer.resize(this.screenWidth, this.screenHeight);
-    
-        const generateAfterPoints = (points) => {
-
-            this.loaded = true;
-            this.triangleSet = 
-            new AwesomeTriangleSet(points.flatArray,
-                (set, index) => 
-                new AwesomeTriangle(set, index, this.animationFrameTail.getLastNow, points.getColor, transitionDurations));
-
-            // We must calculate the offsets before we generate the index elements
-            // this will not invoke the onIndexStyles yet
-            this.indexElements = null;
-            this.calculateOffset();
-
-            this.indexElements = new IndexElements(
-                this.triangleSet, 
-                pageIndex, 
-                this.screenRect,
-                (triangle, postId) => triangle.mark(postId));
-
-
-            this.updateIndexStyles(); // invoke it manually
-
-            this.animationFrameTail.hijack(() => this.updateRects());
-            this.inPageTransition = false;
-            this.triangleSet.setPageTransition(false);
-            this.props.onHover(null);
-
-        }
-
-        //generateAfterPoints(new BorderPoints(0,0,this.screenWidth, this.screenHeight, 100));
-        //generateAfterPoints(new RandomPoints(250,250,this.screenWidth, this.screenHeight, 100));
-        new ImagePoints(require(`../assets/${backgroundImage.src}`), null, null,null,
-            (imagePoints) => {
-
-                imagePoints.alpha = 0.25;
-                generateAfterPoints(new CombinedPoints([ imagePoints ]));
-
-                //const indexPoints = new RandomPoints(0,0,this.screenWidth, this.screenHeight, 50);
-                /*
-                const indexPoints = new ImagePoints(require('../assets/gradient.jpg'), null, this.screenWidth, this.screenHeight,
-                (indexPoints2) => {
-
-                    const randomPoints = new RandomPoints();
-                    const borderPoints = new BorderPoints();
-                    generateAfterPoints(new CombinedPoints([ indexPoints2, imagePoints]));
-
-                });
-                */
-
-
-
-
-            });
-   
-
-        // require(`../../assets/${backgroundImage.src}`
-
-        // if a bg image is specified, generate from that
-        /*
-        if (backgroundImage)
+        this.app.renderer.resize(screenWidth, screenHeight);
+ 
+        let backgroundColorSampler;
+        // when randomize is active, disregard default page layout
+        if (!randomize && page.backgroundColorSampler)
         {
-
+            // Page has a sampler image proviced for coloring of triangles
+            backgroundColorSampler = await getImageColorSamplerAsync(require(`../assets/${page.backgroundColorSampler.src}`));
         }
         else
         {
-            new NotQuiteRandomPoints(
-                totalWidth, 
-                totalHeight, 
-                this.screenHeight,
-                pointsInIndexCount, 
-                pointsInRestCount, 
-                generateAfterPoints)
+            // Use random points
+            backgroundColorSampler = new RandomColorSampler({ width : totalWidth, height : totalHeight });
         }
-        */
-    }
 
+        let points = [
+            new RandomPoints({
+                height : totalHeight,
+                width: totalWidth
+                }, backgroundColorSampler),
+            new BorderPoints({
+                width: totalWidth,
+                height : totalHeight}, backgroundColorSampler)];
 
-    componentWillReceiveProps(nextProps)
-    {
-        if (nextProps !== this.props)
+        // when randomize is active, disregard default page layout
+        if (!randomize && page.imagePoints)
         {
-            // Only trigger page loaded on actual change
-            if (nextProps.pageInfo && 
-                nextProps.pageInfo.loaded && 
-                nextProps.pageInfo !== this.props.pageInfo)
-            {
-
-                this.onPageLoaded(nextProps.pageInfo)
-            }
-
-            if (nextProps.poke !== this.props.poke)
-            {
-                this.animationFrameTail.hijack(() => this.updateRects(), 2000);
-            }
+            // Load all images simultaneously
+            const loadSamplers = page.imagePoints.map((options) => getImageColorSamplerAsync(require(`../assets/${options.src}`)));
+            const samplers = await Promise.all(loadSamplers);
+            page.imagePoints.forEach((options, index) => points.push(new ImagePoints(samplers[index], options, screenWidth, screenHeight )));
         }
+
+        // Generate combination of all points
+        const combinedPoints = new CombinedPoints(points);
+        this.loaded = true; // allow stuff to happen again
+
+        // Create our triangle set
+        this.triangleSet = new AwesomeTriangleSet(combinedPoints.flatArray,
+                (set, index) => new AwesomeTriangle(set, index, this.animationFrameTail.getLastNow, combinedPoints.getColor, transitionDurations));
+
+        // We must calculate the offsets before we generate the index elements
+        // this will not invoke the onIndexStyles yet
+        this.indexElements = null;
+        this.calculateOffset();
+
+        // Create the text on the index
+        this.indexElements = new IndexElements(
+            this.triangleSet, 
+            page.index, 
+            this.screenRect,
+            (triangle, postId) => triangle.mark(postId));
+
+        // Generate the styles for the index of the new page, will be passed on to page again
+        this.updateIndexStyles(); 
+
+        // Update the rects for the new triangles
+        // Note that imm flag is set to true here, since on a update we want NO fade in for the white triangles
+        this.animationFrameTail.hijack(() => this.updateRects(true));
+        this.transitionIn();
+       
+        this.props.onHover(null);
     }
 
     calculateOffset()
@@ -226,7 +189,7 @@ class Background extends React.Component {
 
         if (docHeight <= 0 || docWidth <= 0)
         {
-            console.error('Calculating offsets while document size is unknown!');
+            console.warn('Calculating offsets while document size is unknown!');
             return;
         }
 
@@ -280,6 +243,7 @@ class Background extends React.Component {
 
 
     draw = () => {
+
         if (!this.loaded)
             return;
 
@@ -295,7 +259,6 @@ class Background extends React.Component {
                 triangle.draw(graphic)
             }
 
-
         });
         graphic.endFill();
 
@@ -308,8 +271,6 @@ class Background extends React.Component {
         });
 
         this.app.render();
-
-        //this.drawStage.render(this.app.renderer);
     }
 
     onScroll = (e) => {
@@ -332,20 +293,63 @@ class Background extends React.Component {
         this.animationFrameTail.poke();
     }
 
-    onPageSwitch = (first) => {
+    /**
+     * Transition stuff 
+     */
 
+    componentWillReceiveProps(nextProps)
+    {
+        if (nextProps !== this.props)
+        {
+            // Fade out i.e. a page is about to be loaded
+            if (nextProps.fadeOut !== this.props.fadeOut)
+            {
+                this.lastFadeoutPage = this.props.page;
+                this.transitionOut();
+            }
+
+            // Page changed
+            if (nextProps.page && 
+                nextProps.page !== this.props.page)
+            {
+                this.generateAndCallTransitionIn(nextProps.page);
+            }
+
+            // Easter egg
+            if (nextProps.randomize !== this.props.randomize)
+            {
+                this.transitionOut(() => this.generateAndCallTransitionIn(nextProps.page, true));
+            }
+
+            // Triggers pixi rendering for a while
+            if (nextProps.poke !== this.props.poke)
+            {
+                this.animationFrameTail.hijack(() => this.updateRects(), 2000);
+            }
+        }
+    }
+
+    transitionOut(callback)
+    {
         this.inPageTransition = true;
         this.triangleSet.setPageTransition(true);
         this.animationFrameTail.poke();
-
-
-        setTimeout(() =>  {
-
-            this.pageTransition = false;
-            this.onResize();
-
-        },  transitionDurations.pageTransition);
+        
+        setTimeout(() => {
+            if (callback)
+                callback();
+        }, transitionDurations.pageTransition.on); 
     }
+
+    transitionIn()
+    {
+        console.log('in');
+
+        this.inPageTransition = false;
+        this.triangleSet.setPageTransition(false);
+        this.animationFrameTail.poke();
+    }
+
 
     updateRects = (imm) => {
 
@@ -359,7 +363,6 @@ class Background extends React.Component {
         this.prevScrollY = window.scrollY;
 
         this.triangleSet.provideRects(getAllRects('rect-inner', deltaX, deltaY), getAllRects('rect-outer', deltaX, deltaY), this.screenRect, imm);
-        //this.triangleSet.provideRects(getAllPredictedRects('rect-inner', deltaX, deltaY), getAllPredictedRects('rect-outer', deltaX, deltaY), this.screenRect, imm);
     }
     
 

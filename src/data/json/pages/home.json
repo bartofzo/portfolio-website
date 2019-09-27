@@ -2,10 +2,27 @@
     "pageId" : "home",
     "title" : "Home",
     "content" : "hello world",
-    "backgroundImage" : 
-    {
-        "src" : "flower.png"
+
+    "backgroundColorSampler" : {
+        "src" : "gradient.jpg"
     },
+
+    "imagePoints" : [
+        {
+            "src" : "flux3.jpg",
+            "left" : 0,
+            "top" : 0,
+            "right" : "50%",
+            "alpha" : 0.5
+        },
+        {
+            "src" : "flux4.jpg",
+            "left" : "50%",
+            "top" : "50%",
+            "right" : 0,
+            "alpha" : 0.5
+        }],
+
     "posts" : 
     [
         "flux",
@@ -16,68 +33,14 @@
     ],
 
     "index" : [
+
         {
-            "title" : "Welcome"
+            "title" : "Bart",
+            "postId" :"bio"
         },
-        {
-            "title" : "Bart"
-        },
+
         {
             "title" : "van de Sande"
-        },
-        {
-            "title" : "Developer"
-        },
-
-        {
-            "title" : "Musician"
-        },
-
-        {
-            "title" : "Creator"
-        },
-
-        {
-            "title" : "Jazz"
-        },
-
-        {
-            "title" : "Guitar"
-        },
-
-        {
-            "title" : "Electronic"
-        },
-
-        {
-            "title" : "Technology"
-        },
-
-        {
-            "title" : "Games"
-        },
-
-        {
-            "title" : "Web"
-        },
-
-        {
-            "title" : "Beats"
-        },
-
-        {
-            "title" : "Teaching"
-        }
-        ,
-        {
-            "title" : "Brad"
-        },
-        {
-            "title" : "Coleman"
-        }
-        ,
-        {
-            "title" : "Nonline"
         }
     ]
 }

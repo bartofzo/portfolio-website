@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import {  BrowserRouter as Router , Route, Link, Switch } from "react-router-dom";
 import { Helmet } from 'react-helmet';
 import './styles/styles.css';
 
@@ -14,11 +14,12 @@ import Background from "./background/background";
 function App() {
 
 	const [routes, setRoutes] = useState([]);
-	const [pageInfo, setPageInfo] = useState([]);
+	const [page, setPage] = useState(null);
 	const [indexStyles, setIndexStyles] = useState([]);
 	const [poke, setPoke] = useState(0);
+	const [fadeOut, setFadeOut] = useState(0);
+	const [randomize, setRandomize] = useState(0);
 	const [hoverIndexPostId, sethoverIndexPostId] = useState(0);
-
 
 	useEffect(() => {
 		async function fetchRoutes() {
@@ -37,12 +38,29 @@ function App() {
 			</Helmet>
 
 			<Background 
+
+				// whenever these values change, a thing is triggered in background. using performance.now() for diffent values
 				poke={poke}
+				randomize={randomize}
+				fadeOut={fadeOut}
 				onHover={(postId) => sethoverIndexPostId(postId)}
-				pageInfo={pageInfo} 
+				page={page} 
 				onIndexStyles={(styles) => setIndexStyles(styles)} />
 
-			<Nav routes={routes} />
+			<Nav routes={routes} onFadeOut={(fadeOut) =>{ 
+
+				// When a fadeout to another page happens, we must clear the index styles
+				// to prevent the old index style from influencing the index of the new page
+				// the index style will be set again by the background just before the fadein happens
+
+				// NOTE:
+				// it is important that when a fadeout happens, another page will be loaded
+				// so fadeout should only be triggered before a page change
+
+				setIndexStyles([]);
+				setFadeOut(fadeOut)}
+
+				 }/>
 
 			<Switch>
 				{routes.map((route, index) => {
@@ -56,23 +74,12 @@ function App() {
 								hoverIndexPostId={hoverIndexPostId}
 								indexStyles={indexStyles}
 								onPoke={setPoke}
-								onPageLoaded={(pageInfo) => setPageInfo(pageInfo)}
+								onPageLoaded={(page) => setPage(page)}
+								onRandomize={setRandomize}
 								pageId={route.pageId} />
 						
 						} />)
 				})}
-				{/* 
-					<Route
-					key='404'
-					path='*'
-					render={() => 
-						<Page 
-							hoverIndex={hoverIndex}
-							indexStyles={indexStyles}
-							onPageLoaded={(pageInfo) => setPageInfo(pageInfo)}
-							pageId='404' />
-					
-					} /> */ }
 			</Switch>
 
 		</Router>

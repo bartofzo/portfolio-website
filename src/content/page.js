@@ -5,6 +5,7 @@ import getPage from '../data/pagedata.js';
 import SmoothScrollWindow from '../util/smoothscrollwindow.js';
 import LargeImage from './largeimage.js';
 import { Helmet } from 'react-helmet';
+import Footer from './footer.js';
 
 function Page(props)
 {
@@ -13,21 +14,10 @@ function Page(props)
     const [page, setPage] = useState({});
     const [largeImage, setLargeImage] = useState(null);
 
-    const [pageIndexElements, setPageIndexElements] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
-
     const postRefs = useRef({});
-    const pageRef = useRef([]);
+    const pageRef = useRef(null);
 
-
-    const createPageIndex = (pageToIndex) => {
-        return pageToIndex.index.map((indexElement) => {
-            return {
-                title : indexElement.title,
-                postId : indexElement.post
-            }
-        })
-    }
 
     const setPostRef = (element, index) => {
         postRefs.current[index] = element;
@@ -44,33 +34,20 @@ function Page(props)
 
         props.onPoke(performance.now());
         setLargeImage(image);
-
     }
 
     const onThumnailClose = () => {
 
         props.onPoke(performance.now());
         setLargeImage(null);
-
     }
 
 	useEffect(() => {
 		async function fetchPage() {
-
             const loadedPage = await getPage(pageId);
-            
             setPage(loadedPage);
             setIsLoaded(true);
-
-            const pageInfo = {
-                loaded : true,
-                pageIndex :  createPageIndex(loadedPage),
-                backgroundImage : loadedPage.backgroundImage
-            }
-           
-            setPageIndexElements(pageInfo.pageIndex);
-            props.onPageLoaded(pageInfo);
-
+            props.onPageLoaded(loadedPage);
 		}
 		fetchPage();
     }, [pageId]); // second [] argument only executes this effect after mounting and not on updates
@@ -89,9 +66,12 @@ function Page(props)
             </Helmet>
             <div className="page" ref={pageRef} style={style} onClick={() => onIndexClick(props.hoverIndexPostId)}>
 
-                <PageIndex pageIndexElements={pageIndexElements} indexStyles={props.indexStyles} onClick={onIndexClick} />
+                <PageIndex pageIndexElements={page.index} indexStyles={props.indexStyles} onClick={onIndexClick} />
+
                 <Posts posts={page.posts} setRef={setPostRef} onLargeImage={onThumbnailClick} hide={largeImage} />
                 <LargeImage image={largeImage} onClose={() => onThumnailClose()} onOpen={props.onPoke} />
+
+                <Footer onRandomize={props.onRandomize} />
 
             </div>
         </React.Fragment>

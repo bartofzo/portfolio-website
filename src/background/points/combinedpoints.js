@@ -30,7 +30,6 @@ class CombinedPoints
         for (const source of sources)
         {
             const sourceColor = source.getColor(point);
-  
             // Lerp color by alpha
             color = MathHelper.lerpColor(color, sourceColor, sourceColor[3]);
         }

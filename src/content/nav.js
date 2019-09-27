@@ -1,5 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import DelayLink from '../components/delaylink.jsx';
+
+const linkDelayMs = 300; // make sure this matches background fadeout ms
 
 class Nav extends React.Component
 {
@@ -53,9 +55,13 @@ class Nav extends React.Component
                 return(
                     <React.Fragment key={index}>
                     {index !== 0 ? ' / ' : '' }
-                    <Link to={route.path}>
+                    <DelayLink 
+                        to={route.path} 
+                        delay={linkDelayMs} 
+                        onDelayStart={()=>this.props.onFadeOut(performance.now())} >
+                            
                          {route.title}
-                    </Link>
+                    </DelayLink>
                    
                     </React.Fragment>)
 

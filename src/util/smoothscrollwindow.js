@@ -16,11 +16,11 @@ const SmoothScrollWindow = {
         };
 
         const ani = new AnimationFrameTail(duration, () => {
-            const t = smoother.getSmooth(true);
+            const t = smoother.get(true);
             window.scrollTo(MathHelper.lerp(startScroll.x, targetScroll.x, t), MathHelper.lerp(startScroll.y, targetScroll.y, t));
         });
 
-        const smoother = new SmoothBoolean(duration, ani.getLastNow);
+        const smoother = new SmoothBoolean(duration, duration, ani.getLastNow, false);
         ani.poke();
     }
 }

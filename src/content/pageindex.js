@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 function PageIndex(props)
 {
     const { pageIndexElements, indexStyles } = props;
-    
+
     return (
         <div className="fullscreen">
             { indexStyles.map((item, index) => <PageIndexElement key={index} onClick={props.onClick} index={index} item={pageIndexElements[index]} style={indexStyles[index]} />)}
