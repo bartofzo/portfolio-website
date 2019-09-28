@@ -49,6 +49,15 @@ export default withRouter(class DelayLink extends React.Component {
     const { replace, to, delay, onDelayStart, onDelayEnd } = this.props;
     const { history } = this.props;
 
+    // prevent navigating to the same path
+    /*
+    if (to === history.location.pathname)
+    {
+      e.preventDefault();
+      return;
+    }
+    */
+
     onDelayStart(e, to);
     if (e.defaultPrevented) {
       return;
@@ -70,6 +79,7 @@ export default withRouter(class DelayLink extends React.Component {
     delete props.delay;
     delete props.onDelayStart;
     delete props.onDelayEnd;
+    delete props.staticContext;
 
     return (
       <Link {...props} onClick={this.handleClick} />

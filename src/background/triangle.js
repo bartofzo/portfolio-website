@@ -258,7 +258,18 @@ export default class Triangle
      */
     intersectsRect = (rect) => {
 
-        const {  points, offX, offY } = this;
+        const {  points, offX, offY, boundingRect } = this;
+
+        // Optimization
+        /*
+        if (rect.right < boundingRect.left ||
+            rect.left > boundingRect.right ||
+            rect.bottom < boundingRect.top ||
+            rect.top > boundingRect.bottom)
+            {
+                return false;
+            }
+        */
 
         for (let i = 0; i < 6; i += 2)
         {
@@ -305,6 +316,9 @@ export default class Triangle
      * Returns true when this triangle either intersects or is fully in a rect
      */
     touchesRect = (rect) => {
+        if (this.certainlyNotInRect(rect))
+            return false;
+        
         return this.fullyInRect(rect) || this.intersectsRect(rect);
     }
 }

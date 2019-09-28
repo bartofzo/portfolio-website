@@ -44,11 +44,13 @@ function Page(props)
 
 	useEffect(() => {
 		async function fetchPage() {
-            const loadedPage = await getPage(pageId);
+            // Make a 'copy' of the page in memory so
+            // the page is always different on comparisons
+            const loadedPage = {...await getPage(pageId) };
             setPage(loadedPage);
             setIsLoaded(true);
             props.onPageLoaded(loadedPage);
-		}
+        }
 		fetchPage();
     }, [pageId]); // second [] argument only executes this effect after mounting and not on updates
     
@@ -68,11 +70,16 @@ function Page(props)
 
                 <PageIndex pageIndexElements={page.index} indexStyles={props.indexStyles} onClick={onIndexClick} />
 
-                <Posts posts={page.posts} setRef={setPostRef} onLargeImage={onThumbnailClick} hide={largeImage} />
+                <Posts posts={page.posts} setRef={setPostRef} 
+                    onLargeImage={onThumbnailClick} 
+                    hide={largeImage} 
+                    onRandomize={props.onRandomize} 
+                    onFadeOut={props.onFadeOut}
+                    />
                 <LargeImage image={largeImage} onClose={() => onThumnailClose()} onOpen={props.onPoke} />
 
-                <Footer onRandomize={props.onRandomize} />
-
+               
+                <Footer onRandomize={props.onRandomize} onFadeOut={props.onFadeOut} />
             </div>
         </React.Fragment>
     )

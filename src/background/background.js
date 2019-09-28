@@ -8,20 +8,19 @@ import RandomColorSampler from './samplers/randomcolorsampler.js';
 import { getImageColorSamplerAsync } from './samplers/imagecolorsampler.js';
 import AwesomeTriangleSet from './awesometriangleset.js';
 import { debounce } from '../util/debounce.js';
-
-import ShaderCode from './shader.js';
 import AwesomeTriangle from './awesometriangle.js';
 import AnimationFrameTail from '../util/animationframetail.js';
 import IndexElements from './indexelements.js';
-import { getAllRects, getAllPredictedRects } from './boundingrects.js';
+import { getAllRects } from './boundingrects.js';
 import CombinedPoints from './points/combinedpoints.js';
 
 const oversizedX = 1;
 const oversizedY = 2;
+const MOBILE_VERTICAL_ENLARGE = 100;
 
 
 const transitionDurations = {
-    outer : { on : 50, off : 350 },
+    outer : { on : 10, off : 350 },
     inner : { on : 1000, off : 1000 },
     hover : { on : 50, off : 300 },
     pageTransition : {on : 300, off: 300},
@@ -43,7 +42,19 @@ class Background extends React.Component {
     initPixi()
     {
         this.pixi_cnt = null;
-        this.app = new PIXI.Application({ autoResize: true, transparent: true, antialias : true, clearBeforeRender : true })
+        this.app = new PIXI.Application({ 
+
+            autoResize: false,
+            transparent: true, 
+            antialias : true, 
+            clearBeforeRender : true,
+
+            resolution: window.devicePixelRatio,
+            autoDensity : true
+            
+
+        });
+
         this.graphic = new PIXI.Graphics();
         this.borderGraphic = new PIXI.Graphics();
       
@@ -67,14 +78,17 @@ class Background extends React.Component {
         this.app.renderer.plugins.interaction.on('mousemove', this.onMouseMove);
         //this.app.renderer.plugins.interaction.destroy();
         PIXI.Ticker.shared.destroy();
-        this.onResize();
+        
     };
 
 
     componentDidMount() {
+        this.prevWindowHeight = window.innerHeight;
         this.onResize = debounce(this.onResize, 100);
         window.addEventListener('resize', this.onResize);
         window.addEventListener('scroll', this.onScroll);
+
+        this.onResize();
     }
 
     componentWillUnmount() {
@@ -84,10 +98,34 @@ class Background extends React.Component {
     }
 
     onResize = () => {
-        if (!this.props.page || !this.props.page.loaded)
+        if (!this.props.page)
             return;
 
-        this.generateAndCallTransitionIn(this.props.page);
+        if (Math.abs(window.innerHeight - this.prevWindowHeight) > MOBILE_VERTICAL_ENLARGE)
+        {
+            this.prevWindowHeight = window.innerHeight;
+            this.transitionOut(() =>  this.generateAndCallTransitionIn(this.props.page));
+        }
+
+        const parent = this.app.view.parentNode;
+        this.screenWidth = parent.clientWidth;
+        this.screenHeight = parent.clientHeight;
+        this.totalWidth = this.screenWidth * oversizedX;
+        this.prevScrollX = window.scrollX;
+        this.prevScrollY = window.scrollY;
+        this.totalHeight = this.screenHeight + this.screenHeight * oversizedY;
+
+        this.app.renderer.resize(this.screenWidth, this.screenHeight);
+
+        const { totalWidth , totalHeight, screenWidth, screenHeight } = this;
+        this.screenRect = {
+            left : 0,
+            top : 0,
+            right : screenWidth,
+            bottom : screenHeight
+        };
+
+        this.calculateOffset();
     }
 
     /**
@@ -96,6 +134,7 @@ class Background extends React.Component {
      */
     async generateAndCallTransitionIn(page, randomize)
     {
+        
         const parent = this.app.view.parentNode;
         this.screenWidth = parent.clientWidth;
         this.screenHeight = parent.clientHeight;
@@ -103,6 +142,7 @@ class Background extends React.Component {
         this.prevScrollX = window.scrollX;
         this.prevScrollY = window.scrollY;
         this.totalHeight = this.screenHeight + this.screenHeight * oversizedY;
+        
 
         const { totalWidth , totalHeight, screenWidth, screenHeight } = this;
         this.screenRect = {
@@ -113,7 +153,7 @@ class Background extends React.Component {
         };
 
         this.loaded = false;
-        this.app.renderer.resize(screenWidth, screenHeight);
+        
  
         let backgroundColorSampler;
         // when randomize is active, disregard default page layout
@@ -168,7 +208,7 @@ class Background extends React.Component {
 
         // Generate the styles for the index of the new page, will be passed on to page again
         this.updateIndexStyles(); 
-
+      
         // Update the rects for the new triangles
         // Note that imm flag is set to true here, since on a update we want NO fade in for the white triangles
         this.animationFrameTail.hijack(() => this.updateRects(true));
@@ -184,7 +224,7 @@ class Background extends React.Component {
             return;
 
         const { totalWidth, totalHeight, screenWidth, screenHeight } = this;
-        const docHeight = (document.height !== undefined) ? document.height : document.body.offsetHeight;
+        let docHeight = (document.height !== undefined) ? document.height : document.body.offsetHeight;
         const docWidth = (document.width !== undefined) ? document.width : document.body.offsetWidth;
 
         if (docHeight <= 0 || docWidth <= 0)
@@ -192,6 +232,8 @@ class Background extends React.Component {
             console.warn('Calculating offsets while document size is unknown!');
             return;
         }
+
+        docHeight += MOBILE_VERTICAL_ENLARGE * 4;
 
         let x01 = 0;
         let y01 = 0;
@@ -203,7 +245,6 @@ class Background extends React.Component {
 
         y01 = Math.max(0, window.scrollY - screenHeight) / (docHeight);
 
-        
         this.offX = -x01 * (totalWidth - screenWidth);
         this.offY = -y01 * (totalHeight - screenHeight);
         this.offY = Math.max(-screenHeight, -window.scrollY) - (y01 * (totalHeight - 2 * screenHeight));
@@ -222,6 +263,13 @@ class Background extends React.Component {
     {
         if (!this.indexElements)
             return;
+
+
+        if (this.offY < -this.screenHeight)
+        {
+            // only update when actually visible. costly operation
+            return;
+        }
 
         this.props.onIndexStyles(this.indexElements.map((style, triangle) => {
             const newLeft = style.outer.left + this.offX;
@@ -247,7 +295,7 @@ class Background extends React.Component {
         if (!this.loaded)
             return;
 
-        const { triangleSet, graphic, borderGraphic, app, screenRect } = this;
+        const { triangleSet, graphic, borderGraphic, screenRect } = this;
 
         graphic.clear();
         borderGraphic.clear();
@@ -302,9 +350,8 @@ class Background extends React.Component {
         if (nextProps !== this.props)
         {
             // Fade out i.e. a page is about to be loaded
-            if (nextProps.fadeOut !== this.props.fadeOut)
+            if (nextProps.fadeOut.to !== this.props.fadeOut.to)
             {
-                this.lastFadeoutPage = this.props.page;
                 this.transitionOut();
             }
 
@@ -312,6 +359,7 @@ class Background extends React.Component {
             if (nextProps.page && 
                 nextProps.page !== this.props.page)
             {
+                this.onResize();
                 this.generateAndCallTransitionIn(nextProps.page);
             }
 
@@ -343,13 +391,10 @@ class Background extends React.Component {
 
     transitionIn()
     {
-        console.log('in');
-
         this.inPageTransition = false;
         this.triangleSet.setPageTransition(false);
         this.animationFrameTail.poke();
     }
-
 
     updateRects = (imm) => {
 

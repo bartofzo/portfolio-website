@@ -126,6 +126,11 @@ a:hover, button:hover
     display: inline-block;
 }
 
+#footer div
+{
+    display: inline-block;
+}
+
 .nav-offscreen
 {
     top: -100px;

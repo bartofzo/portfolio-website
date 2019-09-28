@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Post from './post.js';
 
-
 class Posts extends React.Component
 {
     render()
@@ -28,6 +27,8 @@ class Posts extends React.Component
                          />
 
                 )}
+
+           
             </div>
         )
     }

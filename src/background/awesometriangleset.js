@@ -17,55 +17,33 @@ class AwesomeTriangleSet extends TriangleSet{
     {
         for (const triangle of this.triangles)
         {
+            
+
             triangle.inner = false;
             triangle.outer = false;
             triangle.blocked = false;
             triangle.between = false;
 
-            for (const rect of innerRects)
-            {
-            
-                triangle.blocked |= triangle.touchesRect(rect);
 
-                //triangle.inner |= triangle.fullyInRect(rect);
-                //triangle.blocked |= triangle.inner;
+
+            if (!triangle.certainlyNotInRect(screenRect))
+            { 
+                for (const rect of innerRects)
+                {
                 
-                /*
-                if (!triangle.inner && triangle.intersectsRect(rect) && triangle.intersectsRect(screenRect))
-                {
-                    triangle.between = true;
+                    triangle.blocked |= triangle.touchesRect(rect);
+    
                 }
-                */
 
-            }
-
-            for (const rect of outerRects)
-            {
-                triangle.outer |= triangle.touchesRect(rect);
-                if (triangle.outer)
-                    triangle.inner = false;
-                    
-
-                triangle.blocked |= triangle.outer;
-
-                /*
-                if (!triangle.outer && !triangle.inner)
+                for (const rect of outerRects)
                 {
-                    let foundOuter = false;
-                    let foundInner = false;
+                    triangle.outer |= triangle.touchesRect(rect);
+                    if (triangle.outer)
+                        triangle.inner = false;
+                        
 
-                    triangle.forEachAdjecentTriangle((adj) => {
-
-                        foundInner |= adj.inner;
-                        foundOuter |= adj.outer;
-
-                    });
-
-                    triangle.between = foundInner && foundOuter;
+                    triangle.blocked |= triangle.outer;
                 }
-                */
-
-
             }
 
             if (imm)

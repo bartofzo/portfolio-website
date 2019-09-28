@@ -1,7 +1,7 @@
 import React from 'react';
 import DelayLink from '../components/delaylink.jsx';
 
-const linkDelayMs = 300; // make sure this matches background fadeout ms
+const linkDelayMs = 300; // make sure this matches background fadeout ms and footer fadeoutms
 
 class Nav extends React.Component
 {
@@ -58,7 +58,7 @@ class Nav extends React.Component
                     <DelayLink 
                         to={route.path} 
                         delay={linkDelayMs} 
-                        onDelayStart={()=>this.props.onFadeOut(performance.now())} >
+                        onDelayStart={()=>this.props.onFadeOut( {to : route.path }) } >
                             
                          {route.title}
                     </DelayLink>

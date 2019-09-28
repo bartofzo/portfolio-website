@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {  BrowserRouter as Router , Route, Link, Switch } from "react-router-dom";
-import { Helmet } from 'react-helmet';
+import {  BrowserRouter as Router , Route, Link, Switch, withRouter } from "react-router-dom";
 import './styles/styles.css';
 
 import getRoutes from './data/routesdata.js';
@@ -11,13 +10,13 @@ import Page from './content/page.js';
 import Background from "./background/background";
 
 
-function App() {
+function App(props) {
 
 	const [routes, setRoutes] = useState([]);
 	const [page, setPage] = useState(null);
 	const [indexStyles, setIndexStyles] = useState([]);
 	const [poke, setPoke] = useState(0);
-	const [fadeOut, setFadeOut] = useState(0);
+	const [fadeOut, setFadeOut] = useState({ to : '', hash : 0 });
 	const [randomize, setRandomize] = useState(0);
 	const [hoverIndexPostId, sethoverIndexPostId] = useState(0);
 
@@ -29,14 +28,21 @@ function App() {
 		fetchRoutes();
 	}, []); // second [] argument only executes this effect after mounting and not on updates
 
+	const onFadeOut = (nextFadeOut) => {
+		// NOTE:
+		// it is important that when a fadeout happens, another page will be loaded
+		// so fadeout should only be triggered before a page change
+		if (nextFadeOut.to !== props.location.pathname)
+		{
+			// When a fadeout to another page happens, we must clear the index styles
+			// to prevent the old index style from influencing the index of the new page
+			// the index style will be set again by the background just before the fadein happens
+			setIndexStyles([]);
+			setFadeOut(nextFadeOut)
+		}};
 
 	return (
-		<Router>
-			<Helmet>
-				<title>Bart van de Sande</title>
-				<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0" />
-			</Helmet>
-
+		<div>
 			<Background 
 
 				// whenever these values change, a thing is triggered in background. using performance.now() for diffent values
@@ -47,20 +53,7 @@ function App() {
 				page={page} 
 				onIndexStyles={(styles) => setIndexStyles(styles)} />
 
-			<Nav routes={routes} onFadeOut={(fadeOut) =>{ 
-
-				// When a fadeout to another page happens, we must clear the index styles
-				// to prevent the old index style from influencing the index of the new page
-				// the index style will be set again by the background just before the fadein happens
-
-				// NOTE:
-				// it is important that when a fadeout happens, another page will be loaded
-				// so fadeout should only be triggered before a page change
-
-				setIndexStyles([]);
-				setFadeOut(fadeOut)}
-
-				 }/>
+			<Nav routes={routes} onFadeOut={onFadeOut} />
 
 			<Switch>
 				{routes.map((route, index) => {
@@ -74,17 +67,27 @@ function App() {
 								hoverIndexPostId={hoverIndexPostId}
 								indexStyles={indexStyles}
 								onPoke={setPoke}
+								onFadeOut={onFadeOut}
 								onPageLoaded={(page) => setPage(page)}
 								onRandomize={setRandomize}
 								pageId={route.pageId} />
 						
 						} />)
 				})}
-			</Switch>
 
-		</Router>
+				<Route key="noroute" path="*">
+						<Page 
+							onPoke={setPoke}
+							indexStyles={indexStyles}
+							onFadeOut={onFadeOut}
+							onPageLoaded={(page) => setPage(page)}
+							onRandomize={setRandomize}
+							pageId="404" />
+				</Route>
+			</Switch>
+		</div>
 	);
 }
 
 
-export default App;
+export default withRouter(App);
