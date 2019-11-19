@@ -1,0 +1,31 @@
+{
+    "id" : "live",
+    "title" : "Live",
+    "paragraphs" : [
+        {
+            "text" : "Improvising is what I love the most in making music. There's ambition to take playing jazz to a higher level when the time comes."
+        },
+        {
+            "title" : "Trio Romanello",
+            "small" : true,
+            "html" : "A versatile jazz trio in which I play guitar. Click <a href=\"https:\/\/www.xperienza.nl\/trioromanello\/\" target=\"_blank\">here<\/a> for more information and bookings (dutch)."
+        },
+        {
+            "title" : "Jazzcats",
+            "small" : true,
+            "html" : "Every month I invite different jazz musicians from The Netherlands to play with me at <a href=\"http:\/\/thecatsbacktilburg.nl\" target=\"_blank\">The Cat's Back<\/a>, Tilburg."
+        }
+        
+    ],
+    "links" : [
+        {
+            "title" : "Trio Romanello",
+            "url" : "https://www.xperienza.nl/trioromanello/"
+        },
+
+        {
+            "title" : "The Cat's Back",
+            "url" : "http://thecatsbacktilburg.nl/"
+        }
+    ]
+}

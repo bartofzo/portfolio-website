@@ -1,0 +1,26 @@
+[
+    { 
+        "title" : "About",
+        "path" : "/",
+        "pageId" : "about"
+    },
+
+    { 
+        "title" : "Projects",
+        "path" : "/projects",
+        "pageId" : "projects"
+    },
+
+    { 
+        "title" : "Music",
+        "path" : "/music",
+        "pageId" : "music"
+    },
+
+    { 
+        "title" : "Contact",
+        "path" : "/contact",
+        "pageId" : "contact",
+        "hidden" : true
+    }
+]

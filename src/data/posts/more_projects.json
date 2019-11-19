@@ -1,0 +1,35 @@
+{
+    "id" : "more_projects",
+    "title" : "More projects",
+
+    "paragraphs" : [
+        {
+            "text" : "Other projects I have worked on"
+        },
+        {
+            "small" : true,
+            "title" : "Bartvandesande.nl",
+            "url" : "https://bartvandesande.nl",
+            "html" : "View the source code <a href=\"https:\/\/github.com\/bartofzo\/portfolio-website\" target=\"_blank\">here<\/a>."
+        },
+        {
+            "small" : true,
+            "title" : "Blockchainstuff",
+            "url" : "https://blockchainstuff.nl",
+            "text" : "Live bitcoin rate and prices"
+        },
+        {
+            "small" : true,
+            "title" : "Como-no.nl",
+            "url" : "https://como-no.nl",
+            "text" : "Website made as designed by Remco van Dun"
+        },
+        {
+            "small" : true,
+            "title" : "The Collective Studio",
+            "url" : "https://www.thecollectivestudio.co",
+            "text" : "Artist live shows widgets"
+        }
+    ]
+
+}

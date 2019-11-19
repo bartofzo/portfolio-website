@@ -1,0 +1,27 @@
+{
+    "pageId" : "about",
+    "title" : "About",
+   
+    "posts" : 
+    [
+        "electronic_music",
+        "live",
+        "teaching"
+    ],
+
+    "index" : [
+        {
+            "title" : "Electronic",
+            "postId" : "electronic_music"
+        },
+        {
+            "title" : "Live",
+            "postId" : "live"
+        },
+        {
+            "title" : "Teaching",
+            "postId" : "teaching"
+        }
+
+    ]
+}

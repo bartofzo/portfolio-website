@@ -1,0 +1,19 @@
+{
+    "pageId" : "contact",
+    "title" : "Contact",
+
+
+
+    "posts" : 
+    [
+        "contact"
+    ],
+
+    "smallIndex" : true,
+    "index" : [
+
+        {
+            "title" : "Contact"
+        }
+    ]
+}

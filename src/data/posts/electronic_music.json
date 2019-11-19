@@ -1,0 +1,22 @@
+{
+    "id" : "electronic_music",
+    "title" : "Electronic",
+    "paragraphs" : [
+        {
+            "html" : "Stream my electronic music productions on <a href=\"https:\/\/soundcloud.com\/bradcoleman\" target=\"_blank\">Soundcloud<\/a> or <a href=\"https:\/\/open.spotify.com\/artist\/4sgyU94Cc4VSWAZ31FTME1#_=_\" target=\"_blank\">Spotify<\/a>."
+        },
+        {
+            "html" : "<iframe width=\"100%\" height=\"450\" scrolling=\"no\" frameborder=\"no\" allow=\"autoplay\" src=\"https:\/\/w.soundcloud.com\/player\/?url=https%3A\/\/api.soundcloud.com\/users\/20389385&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true\"><\/iframe>"
+        }
+    ],
+    "links" : [
+        {
+            "title" : "Soundcloud",
+            "url" : "https://soundcloud.com/bradcoleman"
+        },
+        {
+            "title" : "Spotify",
+            "url" : "https://open.spotify.com/artist/4sgyU94Cc4VSWAZ31FTME1#_=_"
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id" : "osmocote",
+    "title" : "Osmocote-Exact Game",
+    "links" : [
+        {
+            "title" : "Play Now",
+            "url" : "https://osmocote.game"
+        }
+    ],
+    "paragraphs" : [
+        {
+            "text" : "This arcade style game challenges the player to grow as many plants as possible within a timeframe. By carefully aiming and timing, people can compete for mothly prizes."
+        },
+        {
+            "text" : "Commissioned by ICL Speciality Fertilizers as part of a promotional campaign for their Osmocote-Exact product line."
+        }
+    ],
+    "images" : [
+        { "src" : "osmocote/osmocote1.jpg", "smallsrc" : "osmocote/osmocote1_small.jpg" }
+    ]
+
+}

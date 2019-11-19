@@ -1,0 +1,42 @@
+{
+    "pageId" : "underconstruction",
+    "title" : "Under construction",
+
+    "posts" : 
+    [
+        {
+            "id" : "bio",
+            "title" : "Under construction",
+            "paragraphs" : [
+                {
+                    "text" : "Inquiries: info@bartvandesande.nl"
+                }
+            ]
+        }
+    ],
+
+    "smallIndex" : true,
+    "index" : [
+        {
+            "title" : "Under construction"
+        },
+
+        {
+            "title" : "Bart"
+        },
+
+        {
+            "title" : "van de Sande"
+        },
+
+
+
+        {
+            "title" : "Musician"
+        },
+
+        {
+            "title" : "Developer"
+        }
+    ]
+}

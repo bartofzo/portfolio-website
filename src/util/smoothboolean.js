@@ -71,7 +71,6 @@ export default class SmoothBoolean
         if (!this._isOn)
         {
             this._start = this.valueFunction();
-            
             this._target = this._onValue;
             this._startTime = this._getTime();
             this._currentDuration = this.onDuration;
@@ -127,6 +126,5 @@ export default class SmoothBoolean
         {
             this._startTime = -this.offDuration;
         }
-        
     }
 }

@@ -1,0 +1,34 @@
+{
+    "pageId" : "flux",
+    "title" : "FLUX",
+
+    "backgroundColorSampler" : {
+        "src" : "flux3.jpg"
+    },
+
+    "imagePoints" : [
+        {
+            "src" : "flux4.jpg",
+            "left" : "50%",
+            "top" : "50%",
+            "right" : 0,
+            "alpha" : 0.5,
+            "treshold" : 10
+        }],
+
+    "posts" : 
+    [
+        "flux2"
+    ],
+
+    "smallIndex" : true,
+    "index" : [
+
+        {
+            "title" : "FLUX"
+        },
+        {
+            "title" : "Game"
+        }
+    ]
+}

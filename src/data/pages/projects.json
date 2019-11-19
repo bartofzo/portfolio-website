@@ -1,0 +1,33 @@
+{
+    "pageId" : "projects",
+    "title" : "Projects",
+
+
+    "posts" : 
+    [
+        "fungi",
+        "osmocote",
+        "flux",
+        "more_projects"
+    ],
+
+    "index" : [
+
+        {
+            "title" : "fungi",
+            "postId" : "fungi"
+        },
+        {
+            "title" : "osmocote",
+            "postId" :"osmocote"
+        },
+        {
+            "title" : "flux",
+            "postId" :"flux"
+        },
+        {
+            "title" : "more",
+            "postId" :"more_projects"
+        }
+    ]
+}

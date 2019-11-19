@@ -1,0 +1,24 @@
+{
+    "id" : "bio_music",
+    "title" : "Music",
+    "paragraphs" : [
+        {
+            "text" : "I started playing guitar at the age of 14 and it didn’t take long to discover the joy of improvising. Studying jazz felt like the natural next step. I started my studies at the conservatory of Tilburg and switched to the conservatory of Amsterdam where I graduated with honours in 2012."
+        },
+        {
+            "text" : "After studying jazz intensively, I wanted to explore sounds that six strings can’t produce. I started experimenting with electronic music, using computers and synthesizers to create sounds. From this, the alias ‘Brad Coleman’ emerged as an outlet for all of my electronic endeavours. I started mainly focusing on dance music, but as time passed, so did the boundaries. Diving into producing electronic music has shaped me to become a better musician. It made me more conscious about sound and the role every musical element has in a piece."
+        },
+        {
+            "text" : "As of today, both worlds of improvisation and electronic music speak to me equally. But the ‘nowness’ of picking up an instrument and just play something will always have the advantage over wiring up dozens of systems.  I play regularly with different musicians, ‘jazzing’ up the atmosphere at different locations throughout the Netherlands. While I did shows with my electronic act ‘Brad Coleman’ regularly in the past, as of today, this is mainly focused on production of music, autonomous or commissioned. Though I still have plans to applying my knowledge of technology and music into a live act that bridges the gap between mind and computer."
+        },
+        {
+            "text" : "I still practice playing guitar every day and discovering new paths on the instrument. When the time comes, I will step out with just my guitar and my ideas!"
+        }
+    ],
+    "links" : [
+        {
+            "title" : "Music",
+            "to" : "/music"
+        }
+    ]
+}

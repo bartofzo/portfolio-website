@@ -1,0 +1,71 @@
+{
+    "pageId" : "about",
+    "title" : "About",
+   
+    "posts" : 
+    [
+        "intro",
+        "bio_programming",
+        "bio_music"
+    ],
+
+    "index" : [
+
+        {
+            "title" : "Bart",
+            "postId" :"intro"
+        },
+        {
+            "title" : "van de Sande",
+            "postId" : "intro"
+        },
+        {
+            "title" : "Music",
+            "postId" : "bio_music"
+        },
+        {
+            "title" : "Guitar",
+            "postId" : "bio_music"
+        },
+        {
+            "title" : "Programming",
+            "postId" : "bio_programming"
+        },
+        {
+            "title" : "Synthesizers",
+            "postId" : "bio_music"
+        },
+        {
+            "title" : "Computers",
+            "postId" : "bio_programming"
+        },
+        {
+            "title" : "Teaching",
+            "postId" : "bio_music"
+        },
+        {
+            "title" : "Brad Coleman",
+            "postId" : "bio_music"
+        },
+        {
+            "title" : "Jazz",
+            "postId" : "bio_music"
+        },
+        {
+            "title" : "Electronic Music",
+            "postId" : "bio_music"
+        },
+        {
+            "title" : "Improvisation",
+            "postId" : "bio_music"
+        },
+        {
+            "title" : "Creation",
+            "postId" : "intro"
+        },
+        {
+            "title" : "Games",
+            "postId" : "bio_programming"
+        }
+    ]
+}

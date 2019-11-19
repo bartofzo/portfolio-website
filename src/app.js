@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import {  BrowserRouter as Router , Route, Link, Switch, withRouter } from "react-router-dom";
 import './styles/styles.css';
 
-import getRoutes from './data/routesdata.js';
+import getRoutes from './fetch/routesdata.js';
 
-import Nav from './content/nav.js';
-import Page from './content/page.js';
+import Nav from './components/content/nav.js';
+import Page from './components/content/page.js';
 
-import Background from "./background/background";
+import Background from "./components/background/background.js";
 
 
 function App(props) {
@@ -29,11 +29,13 @@ function App(props) {
 	}, []); // second [] argument only executes this effect after mounting and not on updates
 
 	const onFadeOut = (nextFadeOut) => {
+
 		// NOTE:
 		// it is important that when a fadeout happens, another page will be loaded
 		// so fadeout should only be triggered before a page change
 		if (nextFadeOut.to !== props.location.pathname)
 		{
+
 			// When a fadeout to another page happens, we must clear the index styles
 			// to prevent the old index style from influencing the index of the new page
 			// the index style will be set again by the background just before the fadein happens
@@ -45,7 +47,7 @@ function App(props) {
 		<div>
 			<Background 
 
-				// whenever these values change, a thing is triggered in background. using performance.now() for diffent values
+				// whenever these values change, a thing is triggered in background. using performance.now() for different values
 				poke={poke}
 				randomize={randomize}
 				fadeOut={fadeOut}
@@ -56,35 +58,37 @@ function App(props) {
 			<Nav routes={routes} onFadeOut={onFadeOut} />
 
 			<Switch>
-				{routes.map((route, index) => {
-					return (
-					<Route
-						key={index}
+				{ routes.map((route, index) => {
+
+					return (<Route 
 						exact path={route.path}
+						key={index} 
 						render={() => 
 
 							<Page 
-								hoverIndexPostId={hoverIndexPostId}
-								indexStyles={indexStyles}
+								pageId={route.pageId}
 								onPoke={setPoke}
+								indexStyles={indexStyles}
 								onFadeOut={onFadeOut}
 								onPageLoaded={(page) => setPage(page)}
 								onRandomize={setRandomize}
-								pageId={route.pageId} />
-						
-						} />)
+							/>
+				} />)
+
 				})}
 
 				<Route key="noroute" path="*">
-						<Page 
-							onPoke={setPoke}
-							indexStyles={indexStyles}
-							onFadeOut={onFadeOut}
-							onPageLoaded={(page) => setPage(page)}
-							onRandomize={setRandomize}
-							pageId="404" />
+					<Page 
+						pageId="404"
+						onPoke={setPoke}
+						indexStyles={indexStyles}
+						onFadeOut={onFadeOut}
+						onPageLoaded={(page) => setPage(page)}
+						onRandomize={setRandomize}
+					/>
 				</Route>
 			</Switch>
+
 		</div>
 	);
 }
