@@ -23,13 +23,19 @@ function Page(props)
         postRefs.current[postId] = element;
     }
 
-    const onIndexClick = (postId) => {
-        if (postId !== undefined && postRefs.current[postId])
+    const onIndexClick = (pageIndexElement) => {
+        // this will only fire when a page index element with a postId is clicked
+        // but do check if the post actually exists
+        if (pageIndexElement.postId !== undefined && postRefs.current[pageIndexElement.postId])
         {
-            SmoothScrollWindow.scrollTo(postRefs.current[postId], 500);
+            SmoothScrollWindow.scrollTo(postRefs.current[pageIndexElement.postId], 500);
+        }
+        else
+        {
+            console.error(`pageIndexElement click postId does not exist ${pageIndexElement.postId}`);
         }
     }
-
+    
     const onThumbnailClick = (image) => {
 
         props.onPoke(performance.now());
@@ -45,6 +51,7 @@ function Page(props)
 	useEffect(() => {
 
         let isMounted = true;
+        //console.log('loadPage: ' + pageId);
 
 		async function fetchPage() {
             // Make a 'copy' of the page in memory so
@@ -85,7 +92,13 @@ function Page(props)
             {/* <div className="page" ref={pageRef} style={style} onClick={() => onIndexClick(props.hoverIndexPostId)}> */ }
             <div className="page" ref={pageRef} style={style} >
                 { hasIndex ? 
-                <PageIndex page={page} indexStyles={props.indexStyles} onClick={onIndexClick} /> : null }
+                <PageIndex 
+                    page={page} 
+                    indexStyles={props.indexStyles} 
+                    onClick={onIndexClick}
+                    onFadeOut={props.onFadeOut}
+                    
+                    /> : null }
 
                 <Posts 
                     posts={page.posts} 
@@ -97,8 +110,8 @@ function Page(props)
                     />
                 <LargeImage image={largeImage} onClose={() => onThumnailClose()} onOpen={props.onPoke} />
 
-               
-                <Footer onRandomize={props.onRandomize} onFadeOut={props.onFadeOut} />
+                <Footer onRandomize={props.onRandomize} onFadeOut={props.onFadeOut} multiplier={props.multiplier} onMultiplier={props.onMultiplier} />
+                
             </div>
         </React.Fragment>
     )

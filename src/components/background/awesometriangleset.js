@@ -17,14 +17,11 @@ class AwesomeTriangleSet extends TriangleSet{
     {
         for (const triangle of this.triangles)
         {
-            
-
+ 
             triangle.inner = false;
             triangle.outer = false;
             triangle.blocked = false;
             triangle.between = false;
-
-
 
             if (!triangle.certainlyNotInRect(screenRect))
             { 

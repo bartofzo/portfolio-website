@@ -83,12 +83,12 @@ export default class IndexElements
 
                 inner : {
                     marginTop : r.flip ?  'auto' : null,
-                    cursor : pageIndex[i].postId ? 'pointer' : 'default',
+                    cursor : pageIndex[i].postId || pageIndex[i].to || pageIndex[i].url ? 'pointer' : 'default',
                     color : computeColorValue(triangle.originalColor)
                 } 
             });
 
-            if (markCallback && pageIndex[i].postId)
+            if (markCallback && (pageIndex[i].postId || pageIndex[i].to || pageIndex[i].url))
                 markCallback(triangle, pageIndex[i].postId);
         }
 

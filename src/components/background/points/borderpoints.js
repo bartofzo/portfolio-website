@@ -7,7 +7,7 @@ import { hslToRgb } from '../../../util/colorhelper.js';
  */
 class BorderPoints
 {
-    constructor(options, sampler)
+    constructor(options, sampler, multiplier)
     {
         const defaults = {
             left : 0,
@@ -22,7 +22,8 @@ class BorderPoints
         this.options = {...defaults, ...options };
 
 
-        const { left, top, width, height, amount } = this.options;
+        var { left, top, width, height, amount } = this.options;
+        if (multiplier) amount = Math.floor(amount * multiplier);
  
         const ratio = width / height;
         const yHalfAmount = Math.floor((amount / ratio) / 4);

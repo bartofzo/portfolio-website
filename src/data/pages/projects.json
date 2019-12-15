@@ -11,6 +11,24 @@
         "more_projects"
     ],
 
+    "backgroundColorSampler" : {
+        "src" : "coffeefull.jpg"
+    },
+
+    "imagePoints" : 
+    [
+        {
+            "src" : "coffee.jpg",
+            "tallSrc" : "coffeetall.jpg",
+            "left" : 0,
+            "top" : 0,
+            "right" : 0,
+            "alpha" : 1,
+            "amount" : 1000,
+            "treshold" : 30,
+            "verticalAlphaFade" : false
+        }],
+
     "index" : [
 
         {

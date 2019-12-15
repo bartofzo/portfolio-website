@@ -40,9 +40,8 @@ export default class AwesomeTriangle extends Triangle {
 
     */
 
-    mark(postId)
+    mark()
     {
-        this.markedPostId = postId;
         this.triangleSet.addToMarked(this);
     }
 

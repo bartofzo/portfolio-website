@@ -12,7 +12,10 @@ body {
 
     --small-margin: 10px;
     --large-margin: 20px;
+    --large-margin-double: 40px;
+
     --small-padding: 10px;
+    --small-padding-half: 5px;
     --large-padding: 20px;
 }
 
@@ -52,6 +55,9 @@ a:hover, button:hover
     cursor: pointer; /* for the buttons */
 }
 
+.page-index-element button {
+    text-decoration: none; /* no underline for buttons in page index */
+}
 
 #background {
     z-index: -1;
@@ -124,12 +130,71 @@ a:hover, button:hover
 #footer
 {
     margin-right: auto;
+    max-width: calc(100vw - var(--large-margin-double));
+   /* padding-top: var(--small-padding-half); */
 }
+
+
 
 #footer div
 {
-    display: inline-block;
+    display: flex;
+    flex-wrap: wrap;
 }
+
+.footer-slider-container
+{
+    width: 100%;
+
+    margin: 0;
+    padding-bottom: var(--small-padding);
+}
+
+/* The slider itself */
+.slider {
+
+    width: 100%;
+
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 100%; /* Full-width */
+    height: 2px; /* Specified height */
+    background: #d3d3d3; /* Grey background */
+    outline: none; /* Remove outline */
+    
+
+  }
+  
+  /* Mouse-over effects */
+  .slider:hover {
+    opacity: 1; /* Fully shown on mouse-over */
+  }
+  
+  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 15px; /* Set a specific slider handle width */
+    height: 15px; /* Slider handle height */
+    background: white; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+    outline: none; /* Remove outline */
+    z-index: 10;
+    border-radius: 7px;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 15px; /* Set a specific slider handle width */
+    height: 15px; /* Slider handle height */
+    background: white; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+    outline: none; /* Remove outline */
+    z-index: 10;
+    border-radius: 7px;
+  }
+ 
+
 
 .nav-offscreen
 {
@@ -140,6 +205,7 @@ a:hover, button:hover
 {
     top: 0px;
 }
+
 
 
 .border

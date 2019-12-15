@@ -1,7 +1,7 @@
 import React from 'react';
 import DelayLink from '../delaylink.jsx';
 
-const linkDelayMs = 300; // make sure this matches background fadeout ms and footer fadeoutms, post
+const linkDelayMs = 300; // make sure this matches background fadeout ms and footer fadeoutms, post and pageindex
 
 class Nav extends React.Component
 {
@@ -57,7 +57,6 @@ class Nav extends React.Component
 
                 if (route.hidden) return null; //  no hidden in nav bar
 
-                
                 return(
                     <React.Fragment key={index}>
                     {i2++ !== 0 ? ' / ' : '' }
@@ -68,7 +67,6 @@ class Nav extends React.Component
                             
                          {route.title}
                     </DelayLink>
-                   
                     </React.Fragment>)
 
             })}

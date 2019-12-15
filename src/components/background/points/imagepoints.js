@@ -11,7 +11,7 @@ class ImagePoints
      * 
      * Treshold is 0-255
      */
-    constructor(imageSampler, options, destW, destH, callback)
+    constructor(imageSampler, options, destW, destH, multiplier)
     {   
         const defaults = {
             // top, left, right, bottom...
@@ -20,7 +20,8 @@ class ImagePoints
             treshold : 25, 
             scaleX : 1, 
             scaleY : 1,
-            alpha : 1
+            alpha : 1,
+
 
         };
 
@@ -28,11 +29,15 @@ class ImagePoints
         const w = typeof(destW) !== 'undefined' && destW !== null ? destW : window.innerWidth;
         const h = typeof(destH) !== 'undefined' && destH !== null ? destH : window.innerHeight;
         this.options = Object.assign({}, defaults, {...options, ...rectOf(options, w, h)});
+
+   
+
         this.imageSampler = imageSampler;
         this._scaleX = this.options.scaleX;
         this._scaleY = this.options.scaleY;
        
-        const { treshold, amount } = this.options;
+        var { treshold, amount } = this.options;
+        if (multiplier) amount = Math.floor(amount * multiplier);
 
         this.pushArray = [];
 

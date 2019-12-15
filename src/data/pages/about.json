@@ -9,6 +9,24 @@
         "bio_music"
     ],
 
+    "backgroundColorSampler" : {
+        "src" : "bart1full.jpg"
+    },
+
+    "imagePoints" : 
+    [
+        {
+            "src" : "bart1.jpg",
+            "tallSrc" : "bart1tall.jpg",
+            "left" : 0,
+            "top" : 0,
+            "right" : 0,
+            "alpha" : 1,
+            "amount" : 400,
+            "treshold" : 50,
+            "verticalAlphaFade" : false
+        }],
+
     "index" : [
 
         {
@@ -21,7 +39,7 @@
         },
         {
             "title" : "Music",
-            "postId" : "bio_music"
+            "to" : "/music"
         },
         {
             "title" : "Guitar",

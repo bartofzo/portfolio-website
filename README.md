@@ -47,7 +47,14 @@
 
         {
             "title" : "van de Sande"
+            "to" : "/about" // supply path if index element needs to point to a subpage on the site
         }
     ]
 }
 ```
+
+## Improvements
+
+- Change pageIndex to and postId to one field and make an enum that determines the type of link
+- Centralize all delayed link values into one JSON config
+- Anchors for navigating to another page via the index

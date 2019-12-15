@@ -9,6 +9,24 @@
         "teaching"
     ],
 
+    "backgroundColorSampler" : {
+        "src" : "bartgit3full.jpg"
+    },
+
+    "imagePoints" : 
+    [
+        {
+            "src" : "bartgit3.jpg",
+            "tallSrc" : "bartgit3tall.jpg",
+            "left" : 0,
+            "top" : 0,
+            "right" : 0,
+            "alpha" : 1,
+            "amount" : 1000,
+            "treshold" : 20,
+            "verticalAlphaFade" : false
+        }],
+
     "index" : [
         {
             "title" : "Electronic",

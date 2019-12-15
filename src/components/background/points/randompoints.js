@@ -14,6 +14,8 @@ class RandomPoints
 
         this.options = {...defaults, ...options };
 
+       
+
         this.sampler = sampler;
 
         const { left, top, width, height, amount } = this.options;

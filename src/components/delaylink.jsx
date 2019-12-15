@@ -32,12 +32,36 @@ export default withRouter(class DelayLink extends React.Component {
   constructor(props) {
     super(props);
     this.timeout = null;
+    this.pathnameBeforeTimeout = null;
   }
 
-  componentWillUnmount() {
-    if (this.timeout) {
+  componentWillUnmount = () => {
+    /*
+
+      Note: if we clear the timeout here we run into problems with the pageIndex navigation
+
+      because the pageindex is cleared on a fadeout, the component that contains the delaylink gets unmounted
+      which will clear the timeout
+
+      to circumvent this, we check if the current location is still the same
+      when we unmount. if it is, we assume we still want to navigate and don't clear the timeout
+
+    */
+   const { history } = this.props;
+   if (this.timeout &&
+       this.pathnameBeforeTimeout !== history.location.pathname)
+   {
+      //console.log('t2: ' + this.pathnameBeforeTimeout);
       clearTimeout(this.timeout);
-    }
+   }
+   //else
+   //{
+   //  console.log(this);
+   //}
+
+    //if (this.timeout) {
+    //  clearTimeout(this.timeout);
+    //}
   }
 
   /**
@@ -57,12 +81,17 @@ export default withRouter(class DelayLink extends React.Component {
       return;
     }
     */
-
+   
     onDelayStart(e, to);
     if (e.defaultPrevented) {
       return;
     }
     e.preventDefault();
+   
+    this.pathnameBeforeTimeout = history.location.pathname;
+    
+    //console.log('set pathnamebef: ' + this.pathnameBeforeTimeout);
+    //console.log(this);
 
     this.timeout = setTimeout(() => {
       if (replace) {

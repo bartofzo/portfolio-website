@@ -34,6 +34,7 @@ class Background extends React.Component {
         super(props);
 
         this.state = { style : {} };
+        this.multiplier = props.multiplier || 1;
 
         this.initPixi();
         this.animationFrameTail = new AnimationFrameTail(transitionDurations.max, this.draw);
@@ -155,6 +156,7 @@ class Background extends React.Component {
     }
 
     determineIndexPointAmount = (page) => {
+        
         return page.index.length * 4;
     }
 
@@ -172,9 +174,10 @@ class Background extends React.Component {
         this.prevScrollX = window.scrollX;
         this.prevScrollY = window.scrollY;
         this.totalHeight = this.screenHeight + this.screenHeight * oversizedY;
-        
+        this.isRandomized = randomize;
 
-        const { totalWidth , totalHeight, screenWidth, screenHeight } = this;
+
+        const { totalWidth , totalHeight, screenWidth, screenHeight, multiplier } = this;
         this.screenRect = {
             left : 0,
             top : 0,
@@ -190,7 +193,7 @@ class Background extends React.Component {
         // when randomize is active, disregard default page layout
         if (!randomize && page.backgroundColorSampler)
         {
-            // Page has a sampler image proviced for coloring of triangles
+            // Page has a sampler image provided for coloring of triangles
             try {
                 backgroundColorSampler = await getImageColorSamplerAsync(require(`../../assets/${page.backgroundColorSampler.src}`));
             }
@@ -212,30 +215,41 @@ class Background extends React.Component {
         // sure the large triangles are in 1/4th of the top of the screen
         const indexHeight = page.smallIndex ? window.innerHeight / 4 : window.innerHeight / 2;
 
+
         let points = [
             new RandomPoints({
                 height : indexHeight,
                 width: totalWidth,
-                amount : this.determineIndexPointAmount(page)
+                amount : Math.floor(multiplier * this.determineIndexPointAmount(page))
                 }, backgroundColorSampler),
             new RandomPoints({
                     height : totalHeight - indexHeight,
                     top : indexHeight,
                     width: totalWidth,
-                    amount : this.determinePagePointAmount(page)
+                    amount : Math.floor(multiplier * this.determinePagePointAmount(page))
                     }, backgroundColorSampler),
             new BorderPoints({
                 width: totalWidth,
-                height : totalHeight}, backgroundColorSampler)];
+                height : totalHeight}, backgroundColorSampler, multiplier)];
+
 
         // when randomize is active, disregard default page layout
         if (!randomize && page.imagePoints)
         {
             // Load all images simultaneously
             try {
-                const loadSamplers = page.imagePoints.map((options) => getImageColorSamplerAsync(require(`../../assets/${options.src}`)));
+
+             
+                const loadSamplers = page.imagePoints.map((options) => {
+                    // optional mobile tall version of bg
+                    const src =  (screenHeight > screenWidth && options.tallSrc) ? options.tallSrc : options.src;
+                    return getImageColorSamplerAsync(require(`../../assets/${src}`), options);
+                });
                 const samplers = await Promise.all(loadSamplers);
-                page.imagePoints.forEach((options, index) => points.push(new ImagePoints(samplers[index], options, screenWidth, screenHeight )));
+
+                
+
+                page.imagePoints.forEach((options, index) => points.push(new ImagePoints(samplers[index], options, screenWidth, screenHeight, multiplier )));
             }
             catch (e)
             {
@@ -263,7 +277,7 @@ class Background extends React.Component {
             this.triangleSet, 
             page, 
             this.screenRect,
-            (triangle, postId) => triangle.mark(postId));
+            (triangle, postId) => triangle.mark());
 
         // Generate the styles for the index of the new page, will be passed on to page again
         this.updatedIndexStylesOnce = false; // reset this flag, in case we're already scrolled down we want to update it once
@@ -274,7 +288,7 @@ class Background extends React.Component {
         this.animationFrameTail.hijack(() => this.updateRects(true));
         this.transitionIn();
        
-        this.props.onHover(null);
+        //this.props.onHover(null);
     }
 
     calculateOffset()
@@ -431,6 +445,11 @@ class Background extends React.Component {
             {
                 this.transitionOut(() => this.generateAndCallTransitionIn(nextProps.page, true));
             }
+            else if (nextProps.multiplier !== this.props.multiplier)
+            {
+                this.multiplier = nextProps.multiplier;
+                this.transitionOut(() => this.generateAndCallTransitionIn(nextProps.page, this.isRandomized));
+            }
 
             // Triggers pixi rendering for a while
             if (nextProps.poke !== this.props.poke)
@@ -487,14 +506,10 @@ class Background extends React.Component {
 
         if (triangle)
         {
-            if (triangle !== this.prevHoveredTriangle)
-            {
-                this.props.onHover(triangle.markedPostId);
-            }
-            
             triangle.hover = true;
             this.animationFrameTail.poke();
         }
+        /*
         else
         {
             if (this.prevHoveredTriangle)
@@ -502,6 +517,7 @@ class Background extends React.Component {
                 this.props.onHover(null);
             }
         }
+        */
 
         this.prevHoveredTriangle = triangle;
     }

@@ -20,7 +20,6 @@
     { 
         "title" : "Contact",
         "path" : "/contact",
-        "pageId" : "contact",
-        "hidden" : true
+        "pageId" : "contact"
     }
 ]

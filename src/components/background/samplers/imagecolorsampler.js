@@ -40,7 +40,8 @@ class ImageColorSampler
     constructor(image, options)
     {   
         const defaults = {
-            alpha : 1
+            alpha : 1,
+            verticalAlphaFade : false
         };
 
         this.parsedImage = image;
@@ -67,6 +68,9 @@ class ImageColorSampler
         const { parsedImage } = this;
         const { width, height, data } = parsedImage;
 
+        // exponential alpha falloff to blend better
+        const alpha = this.options.verticalAlphaFade ? ((1-(y/height))*(1-(y/height))) * this.options.alpha : this.options.alpha;
+        //const alpha = this.options.verticalAlphaFade ? (1-(y/height)) * this.options.alpha : this.options.alpha;
 
         if (x  < 0 || x  > width - 1)
         {
@@ -79,7 +83,7 @@ class ImageColorSampler
 
         const i = ((Math.floor(y) * width * 4) + Math.floor(x) * 4);
         
-        return [data[i], data[i + 1], data[i + 2], data[i + 3]];
+        return [data[i], data[i + 1], data[i + 2], alpha * data[i + 3]];
     }
 
     getDeltaBrightness( x, y, sx, sy)
@@ -168,6 +172,10 @@ class ImageColorSampler
     {
         const { width, height } = this.parsedImage;
         const pixel = this.getPixel(x01 * width, y01 * height);
-        return [pixel[0] / 255, pixel[1] / 255, pixel[2] / 255, this.options.alpha * pixel[3] / 255];
+
+       
+        
+
+        return [pixel[0] / 255, pixel[1] / 255, pixel[2] / 255,  pixel[3] / 255];
     }
 }
