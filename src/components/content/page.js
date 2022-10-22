@@ -15,12 +15,22 @@ function Page(props)
     const [page, setPage] = useState({});
     const [largeImage, setLargeImage] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [anchor, setAnchor] = useState(props.anchor);
 
     const postRefs = useRef({});
     const pageRef = useRef(null);
 
     const setPostRef = (element, postId) => {
         postRefs.current[postId] = element;
+       
+        // if an anchor prop was specified, we navigate to that post as soon as the ref is set
+        
+        if (anchor && postId === anchor)
+        {
+            onIndexClick({postId:anchor});
+            setAnchor(null);
+        }
+        
     }
 
     const onIndexClick = (pageIndexElement) => {
@@ -42,7 +52,7 @@ function Page(props)
         setLargeImage(image);
     }
 
-    const onThumnailClose = () => {
+    const onThumbnailClose = () => {
 
         props.onPoke(performance.now());
         setLargeImage(null);
@@ -64,6 +74,9 @@ function Page(props)
                 setPage(loadedPage);
                 setIsLoaded(true);
                 props.onPageLoaded(loadedPage);
+
+
+
             }
 
         }
@@ -76,6 +89,7 @@ function Page(props)
         
     }, [pageId]); // second [] argument only executes this effect after mounting and not on updates
     
+
     if (!isLoaded)
     {
         return null;
@@ -108,7 +122,7 @@ function Page(props)
                     onRandomize={props.onRandomize} 
                     onFadeOut={props.onFadeOut}
                     />
-                <LargeImage image={largeImage} onClose={() => onThumnailClose()} onOpen={props.onPoke} />
+                <LargeImage image={largeImage} onClose={() => onThumbnailClose()} onOpen={props.onPoke} />
 
                 <Footer onRandomize={props.onRandomize} onFadeOut={props.onFadeOut} multiplier={props.multiplier} onMultiplier={props.onMultiplier} />
                 

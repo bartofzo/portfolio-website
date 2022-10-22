@@ -3,18 +3,13 @@
     "title" : "Teaching",
     "paragraphs" : [
         {
-            "html" : "I teach guitar to children and adults at <a href=\"https:\/\/www.h19.nl\">H19<\/a> and at <a href=\"https:\/\/gitaarstudio.com\">Gitaarstudio<\/a>."
+            "html" : "I teach guitar to children and adults at <a href=\"https:\/\/gitaarstudio.com\">Gitaarstudio<\/a>."
         },
         {
             "text" : "My primary goal in teaching is to show people how to have fun playing guitar, while at the same time developing a deeper understanding of the instrument and music in general."
         }
     ],
     "links" : [
-        {
-            "title" : "H19",
-            "url" : "https://www.h19.nl"
-        },
-
         {
             "title" : "Gitaarstudio",
             "url" : "https://gitaarstudio.com"

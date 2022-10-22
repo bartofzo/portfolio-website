@@ -1,0 +1,26 @@
+{
+    "id" : "anypath",
+    "title" : "AnyPath",
+    "links" : [
+        {
+            "title" : "Unity Asset Store",
+            "url" : "https://assetstore.unity.com/packages/slug/213200"
+        },
+        {
+            "title" : "Documentation",
+            "url" : "https://anypath.bartvandesande.nl"
+        }
+    ],
+    "paragraphs" : [
+        {
+            "text" : "AnyPath is a completely generic, lightning fast A* pathfinding solution for Unity."
+        }
+    ],
+    "images" : [
+        { "src" : "anypath/Navigation.png", "smallsrc" : "anypath/Navigation_small.png" },
+        { "src" : "anypath/Hexagonal.png", "smallsrc" : "anypath/Hexagonal_small.png" },
+        { "src" : "anypath/Platform.png", "smallsrc" : "anypath/Platform_small.png" },
+        { "src" : "anypath/Square.png", "smallsrc" : "anypath/Square_small.png" }
+    ]
+
+}

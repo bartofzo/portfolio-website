@@ -1,0 +1,27 @@
+{
+    "id" : "futurestatic",
+    "title" : "FUTURE STATIC",
+    "links" : [
+        {
+            "title" : "Website",
+            "url" : "https://future-static.com/"
+        }
+    ],
+    "paragraphs" : [
+        {
+            "text" : "An ongoing project in collaboration with Coloray."
+        },
+        {
+            "text" : "Future Static translates the concept of man and computer creating a new reality where logic and emotion seem to be at odds with one another. In this experience, visitors will be able to get lost inside the mind of an AI and watch and interact with a virtual Coloray performance while traveling through worlds designed by the artist himself."
+        },
+        {
+            "text" : "The interactive music experience is presented as a virtual show in VR - available on desktop and mobile - and as a 12-track album. The album is available July 16th via Atomnation & Intercept. Next to the album being available digitally, it will also be available on limited edition, 200gr, double vinyl with a transparent sleeve designed by Remco van Dun."
+        }
+    ],
+    "images" : [
+        { "src" : "futurestatic/futurestatic1.jpeg", "smallsrc" : "futurestatic/futurestatic1_small.jpeg" },
+        { "src" : "futurestatic/futurestatic2.png", "smallsrc" : "futurestatic/futurestatic2_small.png" },
+        { "src" : "futurestatic/futurestatic3.jpeg", "smallsrc" : "futurestatic/futurestatic3_small.jpeg" }
+    ]
+
+}

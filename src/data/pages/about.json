@@ -4,7 +4,6 @@
    
     "posts" : 
     [
-        "intro",
         "bio_programming",
         "bio_music"
     ],
@@ -28,15 +27,6 @@
         }],
 
     "index" : [
-
-        {
-            "title" : "Bart",
-            "postId" :"intro"
-        },
-        {
-            "title" : "van de Sande",
-            "postId" : "intro"
-        },
         {
             "title" : "Music",
             "to" : "/music"
@@ -59,7 +49,8 @@
         },
         {
             "title" : "Teaching",
-            "postId" : "bio_music"
+            "to" : "/music",
+            "anchor" : "teaching"
         },
         {
             "title" : "Brad Coleman",
@@ -76,10 +67,6 @@
         {
             "title" : "Improvisation",
             "postId" : "bio_music"
-        },
-        {
-            "title" : "Creation",
-            "postId" : "intro"
         },
         {
             "title" : "Games",

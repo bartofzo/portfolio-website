@@ -1,0 +1,28 @@
+{
+    "id" : "newstower",
+    "title" : "NEWS TOWER",
+    "links" : [
+        {
+            "title" : "Trailer",
+            "url" : "https://youtu.be/IJAjYdFe8cg"
+        },
+        {
+            "title" : "Website",
+            "url" : "https://studionul.games"
+        }
+    ],
+    "paragraphs" : [
+        {
+            "text" : "I'm part of a small team at Studio Nul games creating News Tower."
+        },
+        {
+            "text" : "New York, 1930. The USA is in depression. The biggest economic downturn in the history of the industrialized world and another World War are imminent. Newspapers are struggling throughout the country, as many of their customers are having to pinch pennies like never before. In this turbulent time, you are trying to become one of the nation’s most trusted newspapers, and to create one of Brooklyn’s most iconic buildings: News Tower."
+        }
+    ],
+    "images" : [
+        { "src" : "newstower/newstower1.png", "smallsrc" : "newstower/newstower1_small.png" },
+        { "src" : "newstower/newstower2.png", "smallsrc" : "newstower/newstower2_small.png" },
+        { "src" : "newstower/newstower3.png", "smallsrc" : "newstower/newstower3_small.png" }
+    ]
+
+}

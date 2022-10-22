@@ -1,12 +1,6 @@
 {
     "id" : "osmocote",
     "title" : "Osmocote-Exact Game",
-    "links" : [
-        {
-            "title" : "Play Now",
-            "url" : "https://osmocote.game"
-        }
-    ],
     "paragraphs" : [
         {
             "text" : "This arcade style game challenges the player to grow as many plants as possible within a timeframe. By carefully aiming and timing, people can compete for mothly prizes."

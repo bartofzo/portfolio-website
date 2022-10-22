@@ -4,9 +4,8 @@
    
     "posts" : 
     [
-        "electronic_music",
         "live",
-        "teaching"
+        "electronic_music"
     ],
 
     "backgroundColorSampler" : {
@@ -35,11 +34,6 @@
         {
             "title" : "Live",
             "postId" : "live"
-        },
-        {
-            "title" : "Teaching",
-            "postId" : "teaching"
         }
-
     ]
 }

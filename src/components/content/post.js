@@ -36,7 +36,7 @@ const Post = (props) =>
 
     return (
 
-    <div className={`post-container ${alignClass}`}  ref={props.setRef}>
+    <div id={postId} className={`post-container ${alignClass}`}  ref={props.setRef}>
 
             <PostTitle title={post.title} mobile={true} alignClass={alignClass} aboveImage={post.images && post.images.length > 0} />
          

@@ -5,6 +5,9 @@
 
     "posts" : 
     [
+        "newstower",
+        "futurestatic",
+        "anypath",
         "fungi",
         "osmocote",
         "flux",
@@ -30,7 +33,18 @@
         }],
 
     "index" : [
-
+        {
+            "title" : "news tower",
+            "postId" : "newstower"
+        },
+        {
+            "title" : "future static",
+            "postId" : "futurestatic"
+        },
+        {
+            "title" : "anypath",
+            "postId" :"anypath"
+        },
         {
             "title" : "fungi",
             "postId" : "fungi"

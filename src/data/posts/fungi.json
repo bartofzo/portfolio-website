@@ -1,18 +1,12 @@
 {
     "id" : "fungi",
     "title" : "FUNGI",
-    "links" : [
-        {
-            "title" : "Play Now",
-            "url" : "https://fungi.game"
-        }
-    ],
     "paragraphs" : [
         {
             "text" : "fungi.game is a strategic online multiplayer game in which you battle the rest of the world. Grow from a single cell into a multicellular fungus by leeching mass from other players. Try to make it into the top 10 and immortalize your name in the hall of fame. With the right strategy even smaller fungi can be a threat, so watch out!"
         },
         {
-            "text" : "Available for free on Google Play, Apple Appstore and playable in the browser."
+            "text" : "Unfortunately, FUNGI is no longer available."
         }
     ],
     "images" : [

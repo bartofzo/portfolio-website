@@ -55,7 +55,7 @@ function PageIndexElement(props)
                     style={inner}
                     to={item.to} 
                     delay={linkDelayMs} 
-                    onDelayStart={()=>props.onFadeOut( {to : item.to }) } >
+                    onDelayStart={()=>props.onFadeOut( {to : item.to, anchor : item.anchor }) } >
                         
                     {item.title}
                 </DelayLink>

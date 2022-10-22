@@ -17,6 +17,7 @@ function App(props) {
 	const [fadeOut, setFadeOut] = useState({ to : '', hash : 0 });
 	const [randomize, setRandomize] = useState(0);
 	const [multiplier, setMultiplier] = useState(isMobile ? .29 : 1); // mobile less detail
+	const [currentAnchor, setCurrentAnchor] = useState(null);
 
 	useEffect(() => {
 		async function fetchRoutes() {
@@ -33,13 +34,15 @@ function App(props) {
 		// so fadeout should only be triggered before a page change
 		if (nextFadeOut.to !== props.location.pathname)
 		{
-			console.log(props.location.pathname);
-			console.log(nextFadeOut.to);
+			//console.log(props.location.pathname);
+			//console.log(nextFadeOut.to);
 			// When a fadeout to another page happens, we must clear the index styles
 			// to prevent the old index style from influencing the index of the new page
 			// the index style will be set again by the background just before the fadein happens
 			setIndexStyles([]);
-			setFadeOut(nextFadeOut)
+			
+			setCurrentAnchor(nextFadeOut.anchor);
+			setFadeOut(nextFadeOut);
 		}};
 
 	return (
@@ -76,6 +79,7 @@ function App(props) {
 
 								multiplier={multiplier}
 								onMultiplier={setMultiplier}
+								anchor={currentAnchor}
 							/>
 				} />)
 
